@@ -16,13 +16,21 @@ const Button = ({onClick, text}) => {
   )
 }
 
-const ShowStats = ({stats}) => (
-  <div>
-    <p>good {stats.good}</p>
-    <p>neutral {stats.neutral}</p>
-    <p>bad {stats.bad}</p>
-  </div>
-)
+const ShowStats = ({stats}) => {
+  const all = stats.good + stats.bad + stats.neutral
+  const average = (stats.good - stats.bad) / all
+  const positive = stats.good / all * 100
+  return(
+    <div>
+      <p>good {stats.good}</p>
+      <p>neutral {stats.neutral}</p>
+      <p>bad {stats.bad}</p>
+      <p>all {all}</p>
+      <p>average {average}</p>
+      <p>positive {positive}%</p>
+    </div>
+  )
+}
 
 const App = () => {
 
