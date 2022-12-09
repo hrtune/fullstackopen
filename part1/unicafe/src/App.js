@@ -16,6 +16,14 @@ const Button = ({onClick, text}) => {
   )
 }
 
+const StatisticLine = ({text, value}) => {
+  return(
+    <>
+      <p>{text} {value}</p>
+    </>
+  )
+}
+
 const Statistics = ({stats}) => {
   const all = stats.good + stats.bad + stats.neutral
   if (all === 0) {
@@ -25,16 +33,18 @@ const Statistics = ({stats}) => {
       </div>
     )
   }
-  const average = (stats.good - stats.bad) / all
-  const positive = stats.good / all * 100
+  const round = (x) => Math.round(x * 10) / 10
+  const average = round((stats.good - stats.bad) / all)
+  const positive = round(stats.good / all * 100)
+
   return (
     <div>
-      <p>good {stats.good}</p>
-      <p>neutral {stats.neutral}</p>
-      <p>bad {stats.bad}</p>
-      <p>all {all}</p>
-      <p>average {average}</p>
-      <p>positive {positive}%</p>
+      <StatisticLine text="good" value={stats.good} />
+      <StatisticLine text="neutral" value={stats.neutral} />
+      <StatisticLine text="bad" value={stats.bad} />
+      <StatisticLine text="all" value={all} />
+      <StatisticLine text="average" value={average} />
+      <StatisticLine text="positive" value={positive + '%'} />
     </div>
   )
 }
