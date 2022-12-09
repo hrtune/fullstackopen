@@ -4,6 +4,13 @@ const Button = ({text, onClick}) => (
   <button onClick={onClick}>{text}</button>
 )
 
+const Header = ({text}) => (
+  <>
+    <h1>{text}</h1>
+  </>
+)
+  
+
 const App = () => {
   
   const anecdotes = [
@@ -31,14 +38,20 @@ const App = () => {
     setPoint(copyPoints)
   }
 
-  console.log(selected)
+  const topAnecdote = () => {
+    const i = points.indexOf(Math.max(...points))
+    return anecdotes[i]
+  }
 
   return (
     <div>
-      <h4>{anecdotes[selected]}</h4>
+      <Header text="Anecdote of the day" />
+      <p>{anecdotes[selected]}</p>
       <p>has {points[selected]} votes</p>
       <Button text="vote" onClick={voteToAnecdote} />
       <Button text="next anecdote" onClick={selectAnecdote} />
+      <Header text="Anecdote with most votes" />
+      <p>{topAnecdote()}</p>
     </div>
   );
 }
