@@ -18,10 +18,17 @@ const Persons = ({persons}) => {
   )
 }
 
+const Header = ({text}) => (
+  <>
+    <h2>{text}</h2>
+  </>
+)
+
 const App = () => {
   const [persons, setPersons] = useState([{ name: "Arto Hellas", number: "040-1234567" }]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [filter, setFilter] = useState("");
 
   const isNameInPersons = (name) => {
     const names = persons.map((person) => person.name)
@@ -52,18 +59,31 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
+  const handleFilter = (event) => {
+    setFilter(event.target.value)
+  }
+
+  const filteredPersons = () => {
+    const filterString = filter.toLowerCase()
+    return persons.filter((person) => {
+      const loweredName = person.name.toLowerCase()
+      return loweredName.includes(filterString)
+    })
+  }
   
 
   return (
     <div>
-      <h2>Phonebook</h2>
+      <Header text="Phonebook" />
+      <Input text="filter shown with" value={filter} onChange={handleFilter} />
+      <Header text="add a new" />
       <form onSubmit={addPerson}>
         <Input text={"name"} value={newName} onChange={handleNameChange} />
         <Input text={"number"} value={newNumber} onChange={handleNumberChange} />
         <button type="submit">add</button>
       </form>
-      <h2>Numbers</h2>
-      <Persons persons={persons} />
+      <Header text="Numbers" />
+      <Persons persons={filteredPersons()} />
     </div>
   );
 };
