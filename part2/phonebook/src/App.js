@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 const Input = ({text, value, onChange}) => (
   <div>
@@ -23,13 +24,6 @@ const Header = ({text}) => (
     <h2>{text}</h2>
   </>
 )
-/*
-<form onSubmit={addPerson}>
-        <Input text={"name"} value={newName} onChange={handleNameChange} />
-        <Input text={"number"} value={newNumber} onChange={handleNumberChange} />
-        <button type="submit">add</button>
-</form>
-*/
 
 const Button = ({type, text}) => (
   <>
@@ -49,10 +43,20 @@ const Form = ({onSubmit, inputs, button}) => {
 }
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: "Arto Hellas", number: "040-1234567" }]);
+  const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+
+  useEffect(() => {
+    console.log("effect!");
+    axios
+      .get("http://localhost:3001/persons")
+      .then(response => {
+        console.log(response.data);
+        setPersons(response.data);
+      })
+  }, [])
 
   const isNameInPersons = (name) => {
     const names = persons.map((person) => person.name)
