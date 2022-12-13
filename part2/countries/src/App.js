@@ -3,17 +3,29 @@ import axios from 'axios'
 
 const ListOfCountries = ({countries}) => {
 
+  const [ countryToShow, setCountryToShow ] = useState(null)
+
+  const handleShow = (country) => () => {
+    setCountryToShow(country)
+  }
+
   const mapper =  (country) => {
     const key = country.cc
     const name = country.name
     return (
-      <p key={key}>{name}</p>
+      <p key={key}>
+        {name}
+        <button onClick={handleShow(country)}>show</button>
+      </p>
     )
   }
 
   return (
     <div>
-      {countries.map(mapper)}
+      <div>
+        {countries.map(mapper)}
+      </div>
+      {countryToShow ? <DetailedCountry country={countryToShow} /> : <></> }
     </div>
   )
 }
