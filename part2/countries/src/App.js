@@ -101,7 +101,7 @@ const Temperature = ({temp}) => {
 
 const WeatherIcon = ({icon, description}) => (
   <div>
-    <img src={`https://openweathermap.org/img/wn/${icon}@2x.png`} alt="few clouds" />
+    <img src={`https://openweathermap.org/img/wn/${icon}@2x.png`} alt={description} />
   </div>
 )
 
