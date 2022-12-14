@@ -73,10 +73,18 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    console.log('add :', newName);
-    setPersons(persons.concat(personObject))
-    setNewName("")
-    setNewNumber("")
+
+    axios
+      .post("http://localhost:3001/persons", personObject)
+      .then(response => {
+        console.log(`add id:${response.data.id} to server`);
+        setPersons(persons.concat(response.data))
+        setNewName("")
+        setNewNumber("")
+      })
+      .catch(error => {
+        alert("Something bad happened, try again.")
+      })
   }
 
   const handleNameChange = (event) => {
