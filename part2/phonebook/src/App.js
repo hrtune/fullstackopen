@@ -57,15 +57,24 @@ const App = () => {
       })
   }, [])
 
-  const isNameInPersons = (name) => {
-    const names = persons.map((person) => person.name)
-    return names.indexOf(name) !== -1
+  const personByName = (name) => {
+    return persons.find(p => name === p.name)
   }
 
   const addPerson = (event) => {
     event.preventDefault()
-    if (isNameInPersons(newName)) {
-      alert(`${newName} is already added to phonebook`);
+    const target = personByName(newName)
+    if (target) {
+      if (!window.confirm(`${target.name} is alraedy added to phonebook, replace the old number with the new one?`)) {
+        return
+      }
+      const newPerson = {...target, number: newNumber}
+      services.update(newPerson, newPerson.id)
+        .then(response => {
+          setPersons(persons.map(p => p.id !== newPerson.id ? p : newPerson))
+          setNewName("")
+          setNewNumber("")
+        })
       return
     }
     const personObject = {
