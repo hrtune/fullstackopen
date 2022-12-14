@@ -25,23 +25,42 @@ const App = (props) => {
     event.preventDefault();
     const noteObject = {
       content: newNote,
-      date: new Date().toISOString(),
+      date: new Date(),
       important: Math.random() > 0.5,
-      id: notes.length + 1,
     };
 
-    setNotes(notes.concat(noteObject));
-    setNewNote("");
+    axios
+      .post("http://localhost:3001/notes", noteObject)
+      .then(response => {
+        setNotes(notes.concat(response.data)) // response will be attatched with id created by json-server
+        setNewNote('')
+      })
+
   };
 
   const handleNoteChange = (event) => {
-    console.log(event.target.value);
     setNewNote(event.target.value);
   };
 
-  const notesToShow = showAll
-  ? notes
-  : notes.filter(note => note.important)
+  const notesToShow = (
+    showAll
+    ? notes
+    : notes.filter(note => note.important)
+  )
+
+  const toggleImportanceOf = (note) => {
+    const url = `http://localhost:3001/notes/${note.id}`
+    const changedNote = {...note, important: !note.important}
+    axios
+      .put(url, changedNote)
+      .then(response => {
+        setNotes(notes.map(n => n.id !== note.id ? n : response.data))
+      })
+      .catch(error => {
+        alert(`the note '${note.content}' has already deleted from server`)
+        setNotes(notes.filter(n => n.id !== note.id))
+      })
+  }
 
   return (
     <div>
@@ -53,7 +72,7 @@ const App = (props) => {
       </div>
       <ul>
         {notesToShow.map((note) => (
-          <Note key={note.id} note={note} />
+          <Note key={note.id} note={note} toggleImportance={() => toggleImportanceOf(note)}/>
         ))}
       </ul>
       <form onSubmit={addNote}>
