@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import services from "./services/phonebook"
 
 const Input = ({text, value, onChange}) => (
   <div>
@@ -7,15 +7,15 @@ const Input = ({text, value, onChange}) => (
   </div>
 )
 
-const Person = ({name, number}) => (
+const Person = ({name, number, deletePerson}) => (
   <div>
-    <p>{name} {number}</p>
+    <p>{name} {number} <button onClick={deletePerson}>delete</button></p>
   </div>
 )
 
-const Persons = ({persons}) => {
+const Persons = ({persons, deletePerson}) => {
   return (
-    persons.map((person) => <Person key={person.name} name={person.name} number={person.number} />)
+    persons.map((person) => <Person key={person.id} name={person.name} number={person.number} deletePerson={() => deletePerson(person)}/>)
   )
 }
 
@@ -50,8 +50,7 @@ const App = () => {
 
   useEffect(() => {
     console.log("effect!");
-    axios
-      .get("http://localhost:3001/persons")
+    services.getAll()
       .then(response => {
         console.log(response.data);
         setPersons(response.data);
@@ -74,8 +73,7 @@ const App = () => {
       number: newNumber
     }
 
-    axios
-      .post("http://localhost:3001/persons", personObject)
+    services.create(personObject)
       .then(response => {
         console.log(`add id:${response.data.id} to server`);
         setPersons(persons.concat(response.data))
@@ -107,6 +105,18 @@ const App = () => {
     })
   }
 
+  const deletePerson = (person) => {
+    const id = person.id
+    if (!(window.confirm(`Delete ${person.name} ?`))) {
+      return
+    }
+    
+    services.remove(id)
+      .then(response => {
+        setPersons(persons.filter(p => id !== p.id))
+      })
+  }
+
   const inputs = [
     {
       text: "name",
@@ -128,7 +138,7 @@ const App = () => {
       <Header text="add a new" />
       <Form onSubmit={addPerson} inputs={inputs} button={{type:"submit", text: "add"}} />
       <Header text="Numbers" />
-      <Persons persons={filteredPersons()} />
+      <Persons persons={filteredPersons()} deletePerson={deletePerson} />
     </div>
   );
 };
