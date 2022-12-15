@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import services from "./services/phonebook"
+import './App.css'
 
 const Input = ({text, value, onChange}) => (
   <div>
@@ -42,11 +43,24 @@ const Form = ({onSubmit, inputs, button}) => {
   )
 }
 
+const Notification = ({notification}) => {
+  if (!notification) {
+    return
+  }
+
+  return (
+    <div className={notification.state}>
+      {notification.message}
+    </div>
+  )
+}
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
   const [filter, setFilter] = useState("");
+  const [notification, setNotification] = useState(null);
 
   useEffect(() => {
     console.log("effect!");
@@ -75,6 +89,16 @@ const App = () => {
           setNewName("")
           setNewNumber("")
         })
+        .catch(error => {
+          if (error.response.status === 404) {
+            setNotification({
+              message: `Information of ${newPerson.name} has already been removed from server`,
+              state: 'error'
+            })
+            
+            setPersons(persons.filter((p) => p.id !== newPerson.id))
+          }
+        })
       return
     }
     const personObject = {
@@ -86,6 +110,11 @@ const App = () => {
       .then(response => {
         console.log(`add id:${response.data.id} to server`);
         setPersons(persons.concat(response.data))
+        setNotification({
+          message: `Added ${response.data.name}`,
+          state: 'success'
+        })
+        setTimeout(() => {setNotification(null)}, 3000)
         setNewName("")
         setNewNumber("")
       })
@@ -143,6 +172,7 @@ const App = () => {
   return (
     <div>
       <Header text="Phonebook" />
+      <Notification notification={notification} />
       <Input text="filter shown with" value={filter} onChange={handleFilter} />
       <Header text="add a new" />
       <Form onSubmit={addPerson} inputs={inputs} button={{type:"submit", text: "add"}} />
