@@ -26,6 +26,9 @@ let notes = [
     },
 ]
 
+const generateId = () => Math.floor(Math.random() * 1e9)
+
+
 app.get('/api/persons', (request, response) => {
     response.json(notes)
 })
@@ -58,6 +61,23 @@ app.delete('/api/persons/:id', (request, response) => {
     } else {
         response.status(204).end()
     }
+})
+
+app.post('/api/persons', (request, response) => {
+    const body = request.body
+    if (!(body.name && body.number)) {
+        return response.status(400).end()
+    }
+
+    const note = {
+        id: generateId(),
+        name: body.name,
+        number: body.number
+    }
+    
+    notes = notes.concat(note)
+
+    response.status(201).json(note)
 })
 
 const PORT = 3001;
