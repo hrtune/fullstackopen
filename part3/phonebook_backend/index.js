@@ -3,7 +3,7 @@ const app = express()
 
 app.use(express.json())
 
-let notes = [
+let persons = [
     {
         id: 1,
         name: "Arto Hellas",
@@ -28,13 +28,17 @@ let notes = [
 
 const generateId = () => Math.floor(Math.random() * 1e9)
 
+const nameInPersons = (name) => {
+    return persons.find(p => p.name === name) || false
+}
+
 
 app.get('/api/persons', (request, response) => {
-    response.json(notes)
+    response.json(persons)
 })
 
 app.get('/info', (request, response) => {
-    const numPeople = notes.length
+    const numPeople = persons.length
     const date = new Date()
     const info = `<p>Phonebook has info for ${numPeople} people</p>
     <p>${date.toString()}</p>`
@@ -43,9 +47,9 @@ app.get('/info', (request, response) => {
 
 app.get('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    const note = notes.find(n => n.id === id)
-    if (note) {
-        response.json(note)
+    const person = persons.find(p => p.id === id)
+    if (person) {
+        response.json(person)
     } else {
         response.status(404).end()
     }
@@ -54,10 +58,10 @@ app.get('/api/persons/:id', (request, response) => {
 
 app.delete('/api/persons/:id', (request, response) => {
     const id = Number(request.params.id)
-    const note = notes.find(n => n.id === id)
-    if (note) {
-        notes = notes.filter(n => n.id !== id)
-        response.status(202).json(note)
+    const person = persons.find(p => p.id === id)
+    if (person) {
+        persons = persons.filter(p => p.id !== id)
+        response.status(202).json(person)
     } else {
         response.status(204).end()
     }
@@ -66,18 +70,28 @@ app.delete('/api/persons/:id', (request, response) => {
 app.post('/api/persons', (request, response) => {
     const body = request.body
     if (!(body.name && body.number)) {
-        return response.status(400).end()
+        return response.status(400).json({
+            error: 'both name and number are required'
+        })
     }
 
-    const note = {
+    if (nameInPersons(body.name)) {
+        return response.status(400).json({
+            error: 'name must be unique'
+        })
+
+    }
+
+
+    const person = {
         id: generateId(),
         name: body.name,
         number: body.number
     }
     
-    notes = notes.concat(note)
+    persons = persons.concat(person)
 
-    response.status(201).json(note)
+    response.status(201).json(person)
 })
 
 const PORT = 3001;
