@@ -49,6 +49,17 @@ app.get('/api/persons/:id', (request, response) => {
 
 })
 
+app.delete('/api/persons/:id', (request, response) => {
+    const id = Number(request.params.id)
+    const note = notes.find(n => n.id === id)
+    if (note) {
+        notes = notes.filter(n => n.id !== id)
+        response.status(202).json(note)
+    } else {
+        response.status(204).end()
+    }
+})
+
 const PORT = 3001;
 app.listen(PORT);
 console.log(`Server running on port ${PORT}`);
