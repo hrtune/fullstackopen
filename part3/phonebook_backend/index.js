@@ -3,7 +3,20 @@ const app = express()
 const morgan = require('morgan') // Fancy logger for node.js
 
 app.use(express.json())
-app.use(morgan('tiny'))
+
+// morgan
+morgan.token("body", (request) => {
+  return JSON.stringify(request.body);
+});
+app.use(
+  morgan(":method :url :status :res[content-length] - :response-time ms :body")
+);
+
+/*
+ logging data even in the console can be dangerous
+ since it can contain sensitive data and may violate 
+ local privacy law (e.g. GDPR in EU) or business-standard.
+*/
 
 let persons = [
     {
