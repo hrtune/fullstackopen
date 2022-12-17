@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Note from "./components/Note";
-import axios from "axios";
 import "./index.css"
+import services from './services/notes'
 
 const Footer = () => {
   const footerStyle = {
@@ -40,12 +40,9 @@ const App = (props) => {
 
   const hook = () => {
     console.log('Effect!');
-    axios
-      .get("http://localhost:3001/notes")
-      .then(response =>{
-        console.log("Promise fullfiled!");
-        setNotes(response.data);
-      })
+    services.getAll().then(response =>{
+      setNotes(response.data);
+    })
   }
 
   useEffect(hook, [])
@@ -60,12 +57,10 @@ const App = (props) => {
       important: Math.random() > 0.5,
     };
 
-    axios
-      .post("http://localhost:3001/notes", noteObject)
-      .then(response => {
-        setNotes(notes.concat(response.data)) // response will be attatched with id created by json-server
-        setNewNote('')
-      })
+    services.create(noteObject).then(response => {
+      setNotes(notes.concat(response.data)) // response will be attatched with id created by json-server
+      setNewNote('')
+    })
 
   };
 
@@ -80,10 +75,8 @@ const App = (props) => {
   )
 
   const toggleImportanceOf = (note) => {
-    const url = `http://localhost:3001/notes/${note.id}`
     const changedNote = {...note, important: !note.important}
-    axios
-      .put(url, changedNote)
+    services.update(note.id, changedNote)
       .then(response => {
         setNotes(notes.map(n => n.id !== note.id ? n : response.data))
       })

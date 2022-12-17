@@ -4,7 +4,7 @@
       "id": 1,
       "content": "HTML is easy",
       "date": "2022-1-17T17:30:31.098Z",
-      "important": false
+      "important": true
     },
     {
       "id": 2,
@@ -22,12 +22,12 @@
       "id": 4,
       "content": "JSON is pretty easy",
       "date": "2022-12-12T11:23:04.557Z",
-      "important": true
+      "important": false
     },
     {
       "content": "Hello!",
       "date": "2022-12-14T11:36:48.803Z",
-      "important": true,
+      "important": false,
       "id": 5
     },
     {
@@ -41,6 +41,12 @@
       "date": "2022-12-14T12:09:37.249Z",
       "important": false,
       "id": 7
+    },
+    {
+      "content": "Sassy Baka",
+      "date": "2022-12-17T11:13:21.189Z",
+      "important": false,
+      "id": 8
     }
   ]
 }
