@@ -3,6 +3,16 @@ const app = express();
 
 app.use(express.json())
 
+// https://fullstackopen.com/en/part3/node_js_and_express#middleware
+const requestLogger = (request, response, next) => {
+    console.log("Method:", request.method);
+    console.log("Path:  ", request.path);
+    console.log("Body:  ", request.body);
+    console.log("---");
+    next();
+}
+app.use(requestLogger)
+
 let notes = [
   {
     id: 1,
@@ -81,6 +91,11 @@ app.post('/api/notes', (request, response) => {
     response.status(201).json(note)
 
 })
+
+const unknownEndPoint = (request, response) => {
+    response.status(404).json({ error: 'unknown endpoint'})
+}
+app.use(unknownEndPoint)
 
 const PORT = 3001;
 app.listen(PORT);
