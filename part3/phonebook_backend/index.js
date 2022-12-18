@@ -1,6 +1,11 @@
 const express = require("express")
 const app = express()
 const morgan = require('morgan') // Fancy logger for node.js
+const cors = require('cors')
+
+app.use(express.static('build'))
+
+app.use(cors())
 
 app.use(express.json())
 
@@ -107,6 +112,28 @@ app.post('/api/persons', (request, response) => {
     persons = persons.concat(person)
 
     response.status(201).json(person)
+})
+
+app.put('/api/persons/:id', (request, response) => {
+    const newPerson = request.body
+    const id = Number(request.params.id)
+    
+    if (!(newPerson.number && newPerson.name)) {
+        response.status(400).json({
+            error: "both name and number field must be filled"
+        })
+    }
+
+    if (!(persons.find(p => p.id === id))) {
+        response.status(400).json({
+            error: `id:${id} is already deleted`
+        })
+    }
+
+    persons = persons.filter(p => p.id !== id)
+    persons = persons.concat(newPerson)
+
+    response.status(200).json(newPerson)
 })
 
 const PORT = 3001;
