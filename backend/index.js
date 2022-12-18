@@ -76,6 +76,33 @@ app.delete('/api/notes/:id', (request, response) => {
     response.status(204).json() // 204: no content
 })
 
+app.put('/api/notes/:id', (request, response) => {
+    const id = Number(request.params.id)
+    const body = request.body
+    if (!(body.content && body.id && body.date)) {
+        return response.status(400).json({
+            error: "not sufficient properties with values"
+        })
+    }
+
+    const oldNote = notes.find(n => n.id === id)
+
+    if (!(oldNote)) {
+        return response.status(400).json({
+            error: "no such id in notes"
+        })
+    }
+
+    notes = notes.filter(n => n.id !== id)
+
+    const newNote = body
+
+    notes = notes.concat(newNote)
+
+    response.status(200).json(newNote)
+    
+})
+
 app.post('/api/notes', (request, response) => {
     const body = request.body
     if (!body.content) {
