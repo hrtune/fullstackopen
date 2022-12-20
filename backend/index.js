@@ -63,22 +63,30 @@ app.get('/api/notes', (request, response) => {
     })
 })
 
-app.get('/api/notes/:id', (request, response) => {
-    Note.findById(request.params.id).then(note => {
-        response.json(note)
-    })
+app.get('/api/notes/:id', (request, response, next) => {
+    Note.findById(request.params.id)
+        .then(note => {
+            if (note) {
+                response.json(note)
+            } else {
+                response.json(404).end()
+            }
+        })
+        .catch(error => next(error))
+        
     
 })
 
 // curl -X DELETE http://localhost:3001/api/notes/<id>
-app.delete('/api/notes/:id', (request, response) => {
-    const id = Number(request.params.id)
-    notes = notes.filter(n => n.id !== id)
-    response.status(204).json() // 204: no content
+app.delete('/api/notes/:id', (request, response, next) => {
+    Note.findByIdAndRemove(request.params.id)
+        .then(result => {
+            response.status(204).end()
+        })
+        .catch(error => next(error))
 })
 
 app.put('/api/notes/:id', (request, response) => {
-    const id = Number(request.params.id)
     const body = request.body
     if (!(body.content && body.id && body.date)) {
         return response.status(400).json({
@@ -86,22 +94,17 @@ app.put('/api/notes/:id', (request, response) => {
         })
     }
 
-    const oldNote = notes.find(n => n.id === id)
-
-    if (!(oldNote)) {
-        return response.status(400).json({
-            error: "no such id in notes"
-        })
+    const note = {
+        content: body.content,
+        important: body.important
     }
 
-    notes = notes.filter(n => n.id !== id)
-
-    const newNote = body
-
-    notes = notes.concat(newNote)
-
-    response.status(200).json(newNote)
-    
+    Note.findByIdAndUpdate(request.params.id, note, {new: true})
+        .then(updatedNote => {
+            response.json(updatedNote)
+        })
+        .catch(error => next(error))
+        
 })
 
 app.post('/api/notes', (request, response) => {
@@ -130,6 +133,18 @@ const unknownEndPoint = (request, response) => {
 }
 app.use(unknownEndPoint)
 
+const errorHandler = (error, request, response, next) => {
+    console.error(error.message);
+
+    if (error.name === "CastError") {
+      return response.status(400).send({ error: "malformatted id" });
+    }
+
+    next(error);
+}
+app.use(errorHandler)
+
 const PORT = process.env.PORT;
 app.listen(PORT);
 console.log(`Server running on port ${PORT}`);
+
