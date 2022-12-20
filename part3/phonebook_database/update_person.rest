@@ -1,0 +1,11 @@
+###
+GET http://localhost:3001/api/persons
+
+###
+PUT http://localhost:3001/api/persons/63a19f4fa2e4e0a3e5fdac29
+Content-Type: application/json
+
+{
+    "name": "Elon Musk",
+    "number": "Updated"
+}

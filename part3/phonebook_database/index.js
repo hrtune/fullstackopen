@@ -111,25 +111,26 @@ app.post('/api/persons', (request, response, next) => {
 })
 
 app.put('/api/persons/:id', (request, response, next) => {
-    const newPerson = request.body
-    const id = Number(request.params.id)
+    const body = request.body
+    const id = request.params.id
     
-    if (!(newPerson.number && newPerson.name)) {
+    if (!(body.number && body.name)) {
         response.status(400).json({
             error: "both name and number field must be filled"
         })
     }
 
-    if (!(persons.find(p => p.id === id))) {
-        response.status(400).json({
-            error: `id:${id} is already deleted`
-        })
+    const person = {
+        name: body.name,
+        number: body.number
     }
 
-    persons = persons.filter(p => p.id !== id)
-    persons = persons.concat(newPerson)
-
-    response.status(200).json(newPerson)
+    Person.findByIdAndUpdate(id, person, {new: true})
+        .then(updatedPerson => {
+            response.json(updatedPerson)
+        })
+        .catch(error => next(error))
+ 
 })
 
 const unknownEndPoint = (request, response) => {
