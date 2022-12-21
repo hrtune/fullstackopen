@@ -86,34 +86,30 @@ app.delete('/api/notes/:id', (request, response, next) => {
         .catch(error => next(error))
 })
 
-app.put('/api/notes/:id', (request, response) => {
-    const body = request.body
+app.put('/api/notes/:id', (request, response, next) => {
+    const { content, important } = request.body
     if (!(body.content && body.id && body.date)) {
         return response.status(400).json({
-            error: "not sufficient properties with values"
+            error: "no sufficient properties with values"
         })
     }
 
-    const note = {
-        content: body.content,
-        important: body.important
-    }
+    const note = { content, important }
 
-    Note.findByIdAndUpdate(request.params.id, note, {new: true})
-        .then(updatedNote => {
-            response.json(updatedNote)
-        })
-        .catch(error => next(error))
+    Note.findByIdAndUpdate(request.params.id, note, {
+        new: true,
+        runValidators: true,
+        context: 'query'
+    })
+    .then(updatedNote => {
+        response.json(updatedNote)
+    })
+    .catch(error => next(error))
         
 })
 
-app.post('/api/notes', (request, response) => {
+app.post('/api/notes', (request, response, next) => {
     const body = request.body
-    if (!body.content) {
-        return response.status(400).json({
-            error: "content missing"
-        })
-    }
 
     const note = new Note({
         content: body.content,
@@ -124,6 +120,7 @@ app.post('/api/notes', (request, response) => {
     note.save().then(savedNote => {
         response.json(savedNote)
     })
+    .catch(error => next(error))
 
 })
 
@@ -138,6 +135,9 @@ const errorHandler = (error, request, response, next) => {
 
     if (error.name === "CastError") {
       return response.status(400).send({ error: "malformatted id" });
+    }
+    if (error.name == "ValidationError") {
+        return response.status(400).json({ error: error.message })
     }
 
     next(error);
