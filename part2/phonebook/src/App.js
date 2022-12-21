@@ -1,18 +1,30 @@
+import React from "react"
 import { useState, useEffect } from "react";
 import services from "./services/phonebook"
 import './App.css'
+import PropTypes from 'prop-types'
 
 const Input = ({text, value, onChange}) => (
   <div>
     {text}: <input value={value} onChange={onChange} />
   </div>
 )
+Input.propTypes = {
+  text: PropTypes.string,
+  value: PropTypes.string,
+  onChange: PropTypes.func
+}
 
 const Person = ({name, number, deletePerson}) => (
   <div>
     <p>{name} {number} <button onClick={deletePerson}>delete</button></p>
   </div>
 )
+Person.propTypes = {
+  name: PropTypes.string,
+  number: PropTypes.string,
+  deletePerson: PropTypes.func
+}
 
 const Persons = ({persons, deletePerson}) => {
   return (
@@ -25,12 +37,19 @@ const Header = ({text}) => (
     <h2>{text}</h2>
   </>
 )
+Header.propTypes = {
+  text: PropTypes.string
+}
 
 const Button = ({type, text}) => (
   <>
     <button type={type}>{text}</button>
   </>
 )
+Button.propTypes = {
+  type: PropTypes.string,
+  text: PropTypes.string
+}
 
 const Form = ({onSubmit, inputs, button}) => {
   return(
@@ -41,6 +60,11 @@ const Form = ({onSubmit, inputs, button}) => {
       </form>
     </div>
   )
+}
+Form.propTypes = {
+  onSubmit: PropTypes.func,
+  inputs: PropTypes.array,
+  button: PropTypes.object
 }
 
 const Notification = ({notification}) => {
@@ -53,6 +77,9 @@ const Notification = ({notification}) => {
       {notification.message}
     </div>
   )
+}
+Notification.propTypes = {
+  notification: PropTypes.object
 }
 
 const App = () => {
@@ -164,7 +191,7 @@ const App = () => {
     }
     
     services.remove(id)
-      .then(response => {
+      .then(() => {
         setPersons(persons.filter(p => id !== p.id))
       })
   }

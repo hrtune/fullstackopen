@@ -26,6 +26,7 @@ app.use(
  local privacy law (e.g. GDPR in EU) or business-standard.
 */
 
+/*
 let persons = [
     {
         id: 1,
@@ -48,12 +49,15 @@ let persons = [
         number: "39-23-6423122",
     },
 ]
+*/
 
+/*
 const generateId = () => Math.floor(Math.random() * 1e9)
 
 const nameInPersons = (name) => {
     return persons.find(p => p.name === name) || false
 }
+*/
 
 
 app.get('/api/persons', (request, response, next) => {
@@ -87,7 +91,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
-        .then(result => {
+        .then(() => {
             console.log(`id: ${request.params.id} is deleted.`);
             response.status(204).end()
         })
