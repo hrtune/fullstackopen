@@ -119,7 +119,12 @@ const App = () => {
         setNewNumber("")
       })
       .catch(error => {
-        alert("Something bad happened, try again.")
+        if (error.response.data.errorName === "ValidationError") {
+          setNotification({
+              message: error.response.data.error,
+              state: 'error'
+          })
+        }
       })
   }
 
