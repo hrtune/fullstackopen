@@ -118,22 +118,20 @@ app.put('/api/persons/:id', (request, response, next) => {
     const body = request.body
     const id = request.params.id
     
-    if (!(body.number && body.name)) {
-        response.status(400).json({
-            error: "both name and number field must be filled"
-        })
-    }
-
     const person = {
         name: body.name,
         number: body.number
     }
 
-    Person.findByIdAndUpdate(id, person, {new: true})
-        .then(updatedPerson => {
-            response.json(updatedPerson)
-        })
-        .catch(error => next(error))
+    Person.findByIdAndUpdate(id, person, {
+        new: true,
+        runValidators: true,
+        context: 'query'
+    })
+    .then(updatedPerson => {
+        response.json(updatedPerson)
+    })
+    .catch(error => next(error))
  
 })
 

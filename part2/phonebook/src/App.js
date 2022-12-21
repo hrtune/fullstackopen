@@ -86,6 +86,10 @@ const App = () => {
       services.update(newPerson, newPerson.id)
         .then(response => {
           setPersons(persons.map(p => p.id !== newPerson.id ? p : newPerson))
+          setNotification({
+            message: `Updated ${response.data.name}`,
+            state: 'success'
+          })
           setNewName("")
           setNewNumber("")
         })
@@ -97,6 +101,11 @@ const App = () => {
             })
             
             setPersons(persons.filter((p) => p.id !== newPerson.id))
+          } else if (error.response.data.errorName === "ValidationError") {
+            setNotification({
+              message: error.response.data.error,
+              state: 'error'
+            })
           }
         })
       return
