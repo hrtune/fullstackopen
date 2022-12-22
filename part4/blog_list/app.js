@@ -4,6 +4,7 @@ const cors = require('cors')
 const mongoose = require('mongoose')
 const config = require('./utils/config')
 const Blog = require('./models/blog')
+const middleware = require('./utils/middleware')
 
 mongoose.connect(config.MONGODB_URI)
 
@@ -27,5 +28,7 @@ app.post('/api/blogs', (request, response) => {
       response.status(201).json(result)
     })
 })
+
+app.use(middleware.unknownEndpoint)
 
 module.exports = app
