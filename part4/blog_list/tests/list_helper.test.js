@@ -148,3 +148,44 @@ describe('most blogs', () => {
     })
   })
 })
+
+describe('most likes', () => {
+  const mostLikes = listHelper.mostLikes
+  
+  test('of empty array is null', () => {
+    const result = mostLikes([])
+    expect(result).toBe(null)
+  })
+
+  test('of one blog is its author with its likes', () => {
+    const result = mostLikes(Array(blogs[0]))
+    expect(result).toEqual({
+      author: "Michael Chan",
+      likes: 7
+    })
+  })
+
+  test('of two blogs is the author with bigger likes', () => {
+    const result = mostLikes(Array(blogs[0], blogs[1]))
+    expect(result).toEqual({
+      author: "Michael Chan",
+      likes: 7
+    })
+  })
+
+  test('of three blogs', () => {
+    const result = mostLikes(blogs.slice(0, 3))
+    expect(result).toEqual({
+      author: "Edsger W. Dijkstra",
+      likes: 17
+    })
+  })
+
+  test('of many blogs', () => {
+    const result = mostLikes(blogs)
+    expect(result).toEqual({
+      author: "Edsger W. Dijkstra",
+      likes: 17
+    })
+  })
+})
