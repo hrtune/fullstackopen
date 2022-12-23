@@ -115,3 +115,36 @@ describe('favorite blog', () => {
   })
 
 })
+
+describe('most blogs', () => {
+  const mostBlogs = listHelper.mostBlogs
+  
+  test('of empty array is null', () => {
+    const result = mostBlogs([])
+    expect(result).toBe(null)
+  })
+
+  test('of one blog is the author with one blog', () => {
+    const result = mostBlogs(Array(blogs[0]))
+    expect(result).toEqual({
+      author: "Michael Chan",
+      blogs: 1
+    })
+  })
+
+  test('of three blogs is the one who has two blogs', () => {
+    const result = mostBlogs(blogs.slice(0, 3))
+    expect(result).toEqual({
+      author: "Edsger W. Dijkstra",
+      blogs: 2
+    })
+  })
+
+  test('of many blogs is the one who has the most blogs', () => {
+    const result = mostBlogs(blogs)
+    expect(result).toEqual({
+      author: "Robert C. Martin",
+      blogs: 3
+    })
+  })
+})

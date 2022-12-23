@@ -35,7 +35,22 @@ return object:
 }
 */
 const mostBlogs = (blogs) => {
-    return null
+    // { "author1" : "blogs of author1", ... }
+    const stats = blogs.reduce((acc, blogs) => {
+        if (blogs.author in acc) {
+            acc[blogs.author] += 1
+        } else {
+            acc[blogs.author] = 1
+        }
+        return acc
+    }, {})
+    return Object.keys(stats).reduce((acc, author) => {
+        if (acc === null || stats[author] > acc.blogs) {
+            return { author: author, blogs: stats[author] }
+        } else {
+            return acc
+        }
+    }, null)
 }
 
 module.exports = {
