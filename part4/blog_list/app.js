@@ -5,6 +5,7 @@ const mongoose = require('mongoose')
 const config = require('./utils/config')
 const middleware = require('./utils/middleware')
 const blogsRouter = require('./controllers/blogs')
+require('express-async-errors')
 
 mongoose.connect(config.MONGODB_URI)
 

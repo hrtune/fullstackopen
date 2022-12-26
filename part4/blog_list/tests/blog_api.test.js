@@ -3,7 +3,6 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const helper = require('./test_helper')
-
 const Blog = require('../models/blog')
 
 
@@ -82,6 +81,41 @@ test('blog without likes property can be added with 0 likes', async () => {
     
     expect(blogAdded.likes).toBe(0)
 
+})
+
+test('blog without title cannot be added and makes bad request', async () => {
+    const titleMissing = {
+        author: "Chris Gampat",
+        url: "https://www.thephoblographer.com/",
+        likes: 100
+    }
+
+    const response = await api
+        .post("/api/blogs")
+        .send(titleMissing)
+        .expect(400)
+
+    
+    expect(response.status).toBe(400)
+    
+})
+
+test('blog without url cannot be added and makes bad request', async () => {
+
+        const urlMissing = {
+        title: "CSIROscope",
+        author: "Commonwealth Scientific and Industrial Research Organisation",
+        // url: "https://blog.csiro.au/"
+        likes: 200
+    }
+
+    const response = await api
+        .post("/api/blogs")
+        .send(urlMissing)
+        .expect(400)
+
+    expect(response.status).toBe(400)
+    
 })
 
 afterAll(() => {

@@ -1,4 +1,5 @@
 const blogsRouter = require('express').Router()
+const { hasUncaughtExceptionCaptureCallback } = require('process')
 const Blog = require('../models/blog')
 
 blogsRouter.get('/', async (request, response) => {
@@ -8,12 +9,16 @@ blogsRouter.get('/', async (request, response) => {
 
 blogsRouter.post('/', async (request, response) => {
   const body = request.body
-  const blog = new Blog({
-    ...body,
-    likes: body.likes || 0
-  })
-  const result = await blog.save()
-  response.status(201).json(result) 
+  try{
+    const blog = new Blog({
+      ...body,
+      likes: body.likes || 0
+    })
+    const result = await blog.save()
+    response.status(201).json(result) 
+  } catch(exception) {
+    response.status(400).send(exception)
+  }
 })
 
 module.exports = blogsRouter
