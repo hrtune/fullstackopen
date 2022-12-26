@@ -49,6 +49,16 @@ test('there are two blogs', async () => {
     expect(response.body).toHaveLength(2)
 }, TIMEOUT)
 
+test('one property is defined by id', async () => {
+    const response = await api.get('/api/blogs')
+    expect(response.body[0].id).toBeDefined()
+})
+
+test('property _id is not defined', async () => {
+    const response = await api.get('/api/blogs')
+    expect(response.body[0]._id).not.toBeDefined()
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
