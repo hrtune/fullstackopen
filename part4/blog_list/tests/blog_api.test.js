@@ -62,6 +62,28 @@ test('a valid blog can be added', async () => {
     
 })
 
+test('blog without likes property can be added with 0 likes', async () => {
+
+    const newBlog = {
+        title: "Joe McNally's Blog",
+        author: "Joe McNally",
+        url: "https://joemcnally.com/"
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+        .expect('Content-Type', /application\/json/)
+    
+    const blogAdded = await Blog.findOne({title: newBlog.title})
+
+    console.log(blogAdded);
+    
+    expect(blogAdded.likes).toBe(0)
+
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })
