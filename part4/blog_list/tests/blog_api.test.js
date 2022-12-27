@@ -118,6 +118,30 @@ test('blog without url cannot be added and makes bad request', async () => {
     
 })
 
+test('delete one blog in db', async () => {
+    const blogs = await helper.blogsInDb() 
+    const blogToDelete = blogs[0]
+    await api
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .expect(204)
+    
+    const blogsAfterDelete = await helper.blogsInDb()
+    
+    expect(blogsAfterDelete).toHaveLength(helper.initialBlogs.length - 1)
+    expect(blogsAfterDelete).not.toContainEqual(blogToDelete)
+
+})
+
+test('delete non existent blog', async () => {
+    await api
+        .delete(`/api/blogs/${await helper.nonExistingId()}`)
+        .expect(204)
+
+    const blogsAfterDelete = await helper.blogsInDb()
+
+    expect(blogsAfterDelete).toHaveLength(helper.initialBlogs.length)
+})
+
 afterAll(() => {
     mongoose.connection.close()
 })

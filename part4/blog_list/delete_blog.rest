@@ -1,0 +1,15 @@
+GET http://localhost:3003/api/blogs
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+
+{
+    "title": "50 Year Project",
+    "author": "TB Markinson",
+    "url": "https://50yearproject.com/",
+    "likes": 50000
+}
+
+###
+DELETE http://localhost:3003/api/blogs/63aacf119c60ee912d49014a
