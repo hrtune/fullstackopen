@@ -76,8 +76,6 @@ test('blog without likes property can be added with 0 likes', async () => {
         .expect('Content-Type', /application\/json/)
     
     const blogAdded = await Blog.findOne({title: newBlog.title})
-
-    console.log(blogAdded);
     
     expect(blogAdded.likes).toBe(0)
 
@@ -140,6 +138,38 @@ test('delete non existent blog', async () => {
     const blogsAfterDelete = await helper.blogsInDb()
 
     expect(blogsAfterDelete).toHaveLength(helper.initialBlogs.length)
+})
+
+test('increment likes of a blog by one', async () => {
+    const blogs = await helper.blogsInDb()
+    const blogToUpdate = blogs[0]
+    const blogToPut = {...blogToUpdate, likes: blogToUpdate.likes + 1}
+    await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(blogToPut)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    const blogAfterUpdate = await Blog.findById(blogToUpdate.id)
+
+    expect(blogAfterUpdate.likes).toBe(blogToUpdate.likes + 1)
+    expect(blogAfterUpdate.toJSON()).toEqual(blogToPut)
+})
+
+test('decrement likes of a blog by one', async () => {
+    const blogs = await helper.blogsInDb()
+    const blogToUpdate = blogs[0]
+    const blogToPut = {...blogToUpdate, likes: blogToUpdate.likes - 1}
+    await api
+        .put(`/api/blogs/${blogToUpdate.id}`)
+        .send(blogToPut)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
+
+    const blogAfterUpdate = await Blog.findById(blogToUpdate.id)
+
+    expect(blogAfterUpdate.likes).toBe(blogToUpdate.likes - 1)
+    expect(blogAfterUpdate.toJSON()).toEqual(blogToPut)
 })
 
 afterAll(() => {
