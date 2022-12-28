@@ -1,0 +1,43 @@
+GET http://localhost:3003/api/users
+
+###
+# Valid user
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "johncena",
+    "name": "John Cena",
+    "password": "bingchilling"
+}
+
+###
+# Name is missing (valid)
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "root",
+    "password": "1234"
+}
+
+###
+# Username is missing (invalid)
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "name": "Mario",
+    "password": "herewego"
+}
+
+###
+# Invalid password length
+POST http://localhost:3003/api/users
+Content-Type: application/json
+
+{
+    "username": "luigi",
+    "name": "Luigi",
+    "password": "Ya"
+}
