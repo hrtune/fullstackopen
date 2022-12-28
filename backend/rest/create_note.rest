@@ -3,7 +3,8 @@ Content-Type: application/json
 
 {
     "content": "Hi, everyone. I'm Yi Lan Ma.",
-    "important": true
+    "important": true,
+    "userId": "63ac0c1695473c1aee969516"
 }
 
 ###
@@ -22,4 +23,17 @@ Content-Type: application/json
 {
     "content": "lol",
     "important": true
+}
+
+###
+# DELETE http://localhost:3001/api/notes/63a6fbcf0e59f927dab227ff
+
+###
+POST http://localhost:3001/api/notes
+Content-Type: application/json
+
+{
+    "content": "Twitter is mine!",
+    "important": true,
+    "userId": "63ac0c1695473c1aee969516"
 }
