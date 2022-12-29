@@ -3,10 +3,11 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-    "title": "My first jorney",
+    "title": "My first example",
     "author": "John Smith",
     "url": "http://example.com",
-    "likes": 0
+    "likes": 0,
+    "user": "63ac48e85c8b02e6fce009e3"
 }
 
 ###
