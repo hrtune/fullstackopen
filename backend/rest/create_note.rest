@@ -1,5 +1,6 @@
 POST http://localhost:3001/api/notes
 Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImVsb24iLCJpZCI6IjYzYWMwYzE2OTU0NzNjMWFlZTk2OTUxNiIsImlhdCI6MTY3MzAwOTEyOSwiZXhwIjoxNjczMDEyNzI5fQ.BFB0AFg4GX2UjjyLm_zRvlOP2bMvT22jiVXu7zL71gc
 
 {
     "content": "Hi, everyone. I'm Yi Lan Ma.",
