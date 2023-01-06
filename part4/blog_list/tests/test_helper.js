@@ -6,13 +6,13 @@ const initialBlogs = [
         title: "Cup Of Jo",
         author: "Joanna Goddard",
         url: "https://cupofjo.com/",
-        likes: 1000
+        likes: 1000,
     },
     {
         title: "ASK DAVE TAYLOR",
         author: "Dave Taylor",
         url: "https://www.askdavetaylor.com/",
-        likes: 300
+        likes: 300,
     },
     {
         title: "Treehugger",
