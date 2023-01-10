@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react'
 import Blog from './components/Blog'
 import blogService from './services/blogs'
 import loginService from './services/login'
+import BlogForm from './components/BlogForm'
+import Togglable from './components/Togglable'
 import './App.css'
 
 const TIMEOUT = 2500
@@ -23,9 +25,6 @@ const App = () => {
   const [user, setUser] = useState(null)
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [errorMessage, setErrorMessage] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
 
@@ -74,26 +73,14 @@ const App = () => {
     setUser(null)
   }
 
-  const handleCreate = async (event) => {
-    event.preventDefault()
+  const handleCreate = async (blogObject) => {
     try {
-      const newBlog = {
-        title,
-        author,
-        url,
-        likes: 0
-      }
 
-      const blog = await blogService.create(newBlog)
+      const blog = await blogService.create(blogObject)
 
       console.log(`blog ${blog.title} has created`)
 
       setBlogs(blogs.concat(blog))
-
-      // clean up inputs on form
-      setTitle('')
-      setAuthor('')
-      setUrl('')
 
       setSuccessMessage(`a new blog ${blog.title} by ${blog.author} added`)
       setTimeout(() => setSuccessMessage(''), TIMEOUT)
@@ -105,6 +92,7 @@ const App = () => {
     }
   }
 
+  /*
   const createForm = () => (
     <div>
       <h2>create new</h2>
@@ -140,6 +128,7 @@ const App = () => {
       </form>
     </div>
   )
+  */
 
   const loginPage = () => (
     <div>
@@ -178,7 +167,9 @@ const App = () => {
       <p>
         {user.name} logged in<button onClick={handleLogout}>logout</button>
       </p>
-      {createForm()}
+      <Togglable buttonLabel="new blog" >
+        <BlogForm handleCreate={handleCreate} />
+      </Togglable>
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
