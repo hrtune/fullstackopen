@@ -1,4 +1,6 @@
 import { useState } from "react"
+import blogService  from '../services/blogs'
+
 const Blog = ({blog}) => {
   const blogStyle = {
     paddingTop: 10,
@@ -8,9 +10,27 @@ const Blog = ({blog}) => {
     marginBottom: 5
   }
   const [viewMode, setViewMode] = useState(false)
+  const [likes, setLikes] = useState(blog.likes)
 
   const handleClick = () => {
     setViewMode(!viewMode)
+  }
+
+  const handleLike = async () => {
+    const newBlog = {
+      ...blog,
+      likes: likes + 1
+    }
+
+    try {
+      const updatedBlog = await blogService.update(newBlog)
+      console.log(`likes : ${likes} -> ${updatedBlog.likes} (${blog.title})`);
+      setLikes(updatedBlog.likes)
+    } catch (exception) {
+      console.log(exception.message);
+    }
+
+      
   }
 
   const simplifiedBlog = () => (
@@ -24,7 +44,7 @@ const Blog = ({blog}) => {
     <div style={blogStyle}>
       {blog.title} <button onClick={handleClick}>hide</button> <br />
       {blog.url} <br />
-      likes {blog.likes} <button>like</button> <br />
+      likes {likes} <button onClick={handleLike}>like</button> <br />
       {blog.author}
     </div>
   )
