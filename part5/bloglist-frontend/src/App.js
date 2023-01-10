@@ -32,7 +32,7 @@ const App = () => {
   // load all blogs
   useEffect(() => {
     blogService.getAll().then(blogs =>
-      setBlogs( blogs )
+      setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
     )  
   }, [])
 
@@ -80,7 +80,7 @@ const App = () => {
 
       console.log(`blog ${blog.title} has created`)
 
-      setBlogs(blogs.concat(blog))
+      setBlogs(blogs.concat(blog).sort((a, b) => b.likes - a.likes))
 
       setSuccessMessage(`a new blog ${blog.title} by ${blog.author} added`)
       setTimeout(() => setSuccessMessage(''), TIMEOUT)
