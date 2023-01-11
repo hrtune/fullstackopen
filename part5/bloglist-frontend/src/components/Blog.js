@@ -1,7 +1,7 @@
 import { useState } from "react"
 import blogService  from '../services/blogs'
 
-const Blog = ({blog}) => {
+const Blog = ({blog, owned}) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -9,16 +9,26 @@ const Blog = ({blog}) => {
     borderWidth: 1,
     marginBottom: 5
   }
+
   const [viewMode, setViewMode] = useState(false)
   const [likes, setLikes] = useState(blog.likes)
+  const [removed, setRemoved] = useState(false)
 
   const handleClick = () => {
     setViewMode(!viewMode)
   }
 
+  const handleRemove = async () => {
+    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
+      await blogService.remove(blog.id)
+      setRemoved(true)
+    }
+  }
+
   const handleLike = async () => {
     const newBlog = {
       ...blog,
+      user: blog.user.id,
       likes: likes + 1
     }
 
@@ -35,22 +45,23 @@ const Blog = ({blog}) => {
 
   const simplifiedBlog = () => (
     <div style={blogStyle}>
-      {blog.title} <em>by</em> {blog.author} <button onClick={handleClick}>view</button>
+      {blog.title} <em>by</em> {blog.author} <button onClick={handleClick}>ℹ️</button>
     </div>
 
   )
 
   const detailedBlog = () => (
     <div style={blogStyle}>
-      {blog.title} <button onClick={handleClick}>hide</button> <br />
+      {blog.title} <button onClick={handleClick}>🙈</button> <br />
       {blog.url} <br />
       likes {likes} <button onClick={handleLike}>like</button> <br />
-      {blog.author}
+      {blog.author} <br />
+      { owned && (<button onClick={handleRemove}>remove</button>)}
     </div>
   )
 
   return (
-    viewMode ? detailedBlog() : simplifiedBlog()
+    removed || (viewMode ? detailedBlog() : simplifiedBlog())
   )
 }
 

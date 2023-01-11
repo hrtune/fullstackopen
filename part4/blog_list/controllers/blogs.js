@@ -1,7 +1,6 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
 
-
 blogsRouter.get('/', async (request, response) => {
   const blogs = await Blog.find({}).populate('user', {username: 1, name: 1})
   response.json(blogs)
@@ -59,21 +58,27 @@ blogsRouter.delete('/:id', async (request, response) => {
 blogsRouter.put('/:id', async (request, response) => {
   const blogId = request.params.id
   const oldBlog = await Blog.findById(blogId)
-
   if (!oldBlog) {
     return response.status(404).json({
       error: 'blog is not found'
     })
   }
-  
-  const user = request.user
 
-  if (user._id.toString() !== oldBlog.user.toString()) {
-    return response.status(401).json({ error: 'token missing or invalid' })
-  }
   const newBlog = {
     ...request.body,
-    user: user._id
+    user: oldBlog.user // user should be the same
+  }
+
+  const onlyDifferInLikes = (
+    newBlog.author === oldBlog.author &&
+    newBlog.title === oldBlog.title &&
+    newBlog.url === oldBlog.url
+  )
+
+  const user = request.user
+
+  if (!onlyDifferInLikes && (user._id.toString() !== oldBlog.user.toString())) {
+    return response.status(401).json({ error: 'token missing or invalid' })
   }
 
   const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, newBlog, {new: true})
