@@ -17,17 +17,17 @@ const Togglable = (props) => {
   return (
     <div>
       { !visible ?
-      (
-        <div> 
-          <button onClick={toggleVisibility}>{props.buttonLabel}</button>
-        </div>
-      ) :
-      (
-      <div>
-        {props.children} {/* referencing the child components of the component */}
-        <button onClick={toggleVisibility}>cancel</button>
-      </div>
-      )
+        (
+          <div>
+            <button onClick={toggleVisibility}>{props.buttonLabel}</button>
+          </div>
+        ) :
+        (
+          <div>
+            {props.children} {/* referencing the child components of the component */}
+            <button onClick={toggleVisibility}>cancel</button>
+          </div>
+        )
       }
     </div>
   )
