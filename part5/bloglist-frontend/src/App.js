@@ -8,7 +8,7 @@ import './App.css'
 
 const TIMEOUT = 2500
 
-const Notification = ({message, state}) => {
+const Notification = ({ message, state }) => {
   if (!message) {
     return null
   }
@@ -33,7 +33,7 @@ const App = () => {
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs( blogs.sort((a, b) => b.likes - a.likes) )
-    )  
+    )
   }, [])
 
   // load login information
@@ -41,7 +41,7 @@ const App = () => {
     const loggedUserJSON = window.localStorage.getItem('loggedBloglistUser')
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON)
-      console.log(`user ${user.username} has logged in`);
+      console.log(`user ${user.username} has logged in`)
       setUser(user)
       blogService.setToken(user.token)
     }
@@ -56,18 +56,18 @@ const App = () => {
       blogService.setToken(user.token)
       window.localStorage.setItem('loggedBloglistUser', JSON.stringify(user))
       setUser(user)
-      console.log(`user ${username} has logged in`);
+      console.log(`user ${username} has logged in`)
       setUsername('')
       setPassword('')
     } catch (exception) {
       setErrorMessage('username or password is incorrect')
       setTimeout(() => setErrorMessage(''), TIMEOUT)
-      console.log(exception.message);
+      console.log(exception.message)
       setPassword('')
     }
   }
 
-  const handleLogout = async (event) => {
+  const handleLogout = async () => {
     window.localStorage.removeItem('loggedBloglistUser')
     setUser(null)
   }
@@ -87,7 +87,7 @@ const App = () => {
     } catch (exception) {
       setErrorMessage('something wrong with the new blog')
       setTimeout(() => setErrorMessage(''), TIMEOUT)
-      console.log(exception.message);
+      console.log(exception.message)
     }
   }
 
@@ -141,7 +141,7 @@ const App = () => {
             type="text"
             value={username}
             name="Username"
-            onChange={({target}) => setUsername(target.value)}
+            onChange={({ target }) => setUsername(target.value)}
           />
         </div>
         <div>
@@ -150,7 +150,7 @@ const App = () => {
             type="password"
             value={password}
             name="Password"
-            onChange={({target}) => setPassword(target.value)}
+            onChange={({ target }) => setPassword(target.value)}
           />
         </div>
         <button type="submit">login</button>
@@ -177,8 +177,8 @@ const App = () => {
 
   return (
     user === null ?
-    loginPage() :
-    blogPage()
+      loginPage() :
+      blogPage()
   )
 }
 

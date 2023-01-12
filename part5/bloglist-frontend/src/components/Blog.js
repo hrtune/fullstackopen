@@ -1,7 +1,7 @@
-import { useState } from "react"
+import { useState } from 'react'
 import blogService  from '../services/blogs'
 
-const Blog = ({blog, owned}) => {
+const Blog = ({ blog, owned, handleLike }) => {
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
@@ -25,27 +25,29 @@ const Blog = ({blog, owned}) => {
     }
   }
 
-  const handleLike = async () => {
-    const newBlog = {
-      ...blog,
-      user: blog.user.id,
-      likes: likes + 1
-    }
+  if (!handleLike) {
+    handleLike = async () => {
+      const newBlog = {
+        ...blog,
+        user: blog.user.id,
+        likes: likes + 1
+      }
 
-    try {
-      const updatedBlog = await blogService.update(newBlog)
-      console.log(`likes : ${likes} -> ${updatedBlog.likes} (${blog.title})`);
-      setLikes(updatedBlog.likes)
-    } catch (exception) {
-      console.log(exception.message);
-    }
+      try {
+        const updatedBlog = await blogService.update(newBlog)
+        console.log(`likes : ${likes} -> ${updatedBlog.likes} (${blog.title})`)
+        setLikes(updatedBlog.likes)
+      } catch (exception) {
+        console.log(exception.message)
+      }
 
-      
+
+    }
   }
 
   const simplifiedBlog = () => (
     <div style={blogStyle}>
-      {blog.title} <em>by</em> {blog.author} <button onClick={handleClick}>ℹ️</button>
+      {blog.title} {blog.author} <button onClick={handleClick}>ℹ️</button>
     </div>
 
   )
@@ -53,8 +55,12 @@ const Blog = ({blog, owned}) => {
   const detailedBlog = () => (
     <div style={blogStyle}>
       {blog.title} <button onClick={handleClick}>🙈</button> <br />
-      {blog.url} <br />
-      likes {likes} <button onClick={handleLike}>like</button> <br />
+      <div className='blog-url'>
+        {blog.url} <br />
+      </div>
+      <div className='blog-likes'>
+        likes {likes} <button onClick={handleLike}>like</button> <br />
+      </div>
       {blog.author} <br />
       { owned && (<button onClick={handleRemove}>remove</button>)}
     </div>
