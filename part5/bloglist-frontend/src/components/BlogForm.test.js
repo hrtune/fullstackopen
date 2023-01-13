@@ -5,21 +5,25 @@ import userEvent from '@testing-library/user-event'
 import BlogForm from './BlogForm'
 
 test('submission of blog form calls event handler with proper content', async () => {
+
   const blog = {
     title: 'Title of the Blog',
     author: 'Author of the Blog',
     url: 'http://example.com',
   }
+
   const createBlog = jest.fn()
   const user = userEvent.setup()
 
   const container = render(<BlogForm handleCreate={createBlog} />).container
 
+  // selecting elements
   const inputTitle = container.querySelector('#blogform-title')
   const inputAuthor = container.querySelector('#blogform-author')
   const inputUrl = container.querySelector('#blogform-url')
   const createButton = screen.getByText('create')
 
+  // fill form and submit
   await user.type(inputTitle, blog.title)
   await user.type(inputAuthor, blog.author)
   await user.type(inputUrl, blog.url)
