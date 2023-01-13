@@ -9,3 +9,13 @@ Content-Type: application/json
     "name": "Elon Musk",
     "password": "musk1234"
 }
+
+###
+POST http://localhost:3001/api/users
+Content-Type: application/json
+
+{
+    "username": "root",
+    "name": "ROOTUSER",
+    "password": "root1234"
+}
