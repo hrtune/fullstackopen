@@ -107,5 +107,39 @@ describe('Blog app', function() {
       })
 
     })
+
+    describe('When several blogs are created', function() {
+      const blog_a = {
+        title: 'The Blog A',
+        author: 'A',
+        url: 'http://example.com/A',
+        likes: 0
+      }
+      const blog_b = {
+        title: 'The Blog B',
+        author: 'B',
+        url: 'http://example.com/B',
+        likes: 1
+      }
+      const blog_c = {
+        title: 'The Blog C',
+        author: 'C',
+        url: 'http://example.com/C',
+        likes: 2
+      }
+
+      beforeEach(function(){
+        cy.createBlog(blog_a)
+        cy.createBlog(blog_b)
+        cy.createBlog(blog_c)
+        cy.visit('http://localhost:3000')
+      })
+
+      it('Blogs are sorted in decending order', function() {
+        cy.get('.blog-simple').eq(0).should('contain', blog_c.title)
+        cy.get('.blog-simple').eq(1).should('contain', blog_b.title)
+        cy.get('.blog-simple').eq(2).should('contain', blog_a.title)
+      })
+    })
   })
 })

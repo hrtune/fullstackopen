@@ -46,7 +46,7 @@ const Blog = ({ blog, owned, handleLike }) => {
   }
 
   const simplifiedBlog = () => (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog-simple">
       {blog.title} {blog.author} <button id="show-button" onClick={handleClick}>ℹ️</button>
     </div>
 
