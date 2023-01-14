@@ -77,6 +77,35 @@ describe('Blog app', function() {
 
         cy.get('.blog-likes').contains('likes 1')
       })
+
+      it('The other user can alos like the blog', function() {
+
+        cy.login(anotherUser)
+        cy.visit('http://localhost:3000')
+
+        cy.contains('ℹ️').click()
+        cy.get('#like-button').click()
+
+        cy.get('.blog-likes').contains('likes 1')
+      })
+
+      it('The owner can delete the blog', function() {
+        cy.contains('ℹ️').click()
+        cy.get('#remove-button').contains('remove').click()
+        cy.should('not.contain', blog.title)
+      })
+
+      it('The other user cannot delete the blog', function() {
+        cy.login(anotherUser)
+        cy.visit('http://localhost:3000')
+
+        cy.contains('ℹ️').click()
+
+        cy.get('.blog-detail')
+          .should('not.contain', 'remove')
+
+      })
+
     })
   })
 })
