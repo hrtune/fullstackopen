@@ -47,22 +47,22 @@ const Blog = ({ blog, owned, handleLike }) => {
 
   const simplifiedBlog = () => (
     <div style={blogStyle}>
-      {blog.title} {blog.author} <button onClick={handleClick}>ℹ️</button>
+      {blog.title} {blog.author} <button id="show-button" onClick={handleClick}>ℹ️</button>
     </div>
 
   )
 
   const detailedBlog = () => (
     <div style={blogStyle}>
-      {blog.title} <button onClick={handleClick}>🙈</button> <br />
+      {blog.title} <button id="hide-button" onClick={handleClick}>🙈</button> <br />
       <div className='blog-url'>
         {blog.url} <br />
       </div>
       <div className='blog-likes'>
-        likes {likes} <button onClick={handleLike}>like</button> <br />
+        likes {likes} <button id="like-button" onClick={handleLike}>like</button> <br />
       </div>
       {blog.author} <br />
-      { owned && (<button onClick={handleRemove}>remove</button>)}
+      { owned && (<button id="remove-button" onClick={handleRemove}>remove</button>)}
     </div>
   )
 

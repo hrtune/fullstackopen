@@ -25,10 +25,29 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 const backendUrl = 'http://localhost:3003'
-// const frontendUrl = 'http://localhost:3000'
+const frontendUrl = 'http://localhost:3000'
 
-Cypress.Commands.add('createUser', ({ username, password }) => {
-  cy.request('POST', backendUrl + '/api/users', {
+Cypress.Commands.add('createUser', (newUser) => {
+  cy.request('POST', backendUrl + '/api/users', newUser)
+})
+
+Cypress.Commands.add('login', ({ username, password }) => {
+  cy.request('POST', backendUrl + '/api/login', {
     username, password
+  }).then(({ body }) => {
+    localStorage.setItem('loggedBloglistUser', JSON.stringify(body))
+    cy.visit(frontendUrl)
+  })
+})
+
+Cypress.Commands.add('createBlog', (newBlog) => {
+  const token = JSON.parse(localStorage.getItem('loggedBloglistUser')).token
+  cy.request({
+    method: 'POST',
+    url: backendUrl + '/api/blogs',
+    auth: {
+      bearer: token
+    },
+    body: newBlog
   })
 })
