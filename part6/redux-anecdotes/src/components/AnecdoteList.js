@@ -1,5 +1,6 @@
 import { useSelector, useDispatch } from "react-redux";
 import { voteToAnecdote } from "../reducers/anecdoteReducer";
+import Notification from "./Notification";
 
 const AnecdoteList = () => {
   const dispatch = useDispatch();
@@ -12,6 +13,7 @@ const AnecdoteList = () => {
   return (
     <div>
       <h2>Anecdotes</h2>
+      <Notification />
       {anecdotes.map((anecdote) => (
         <div key={anecdote.id}>
           <div>{anecdote.content}</div>
