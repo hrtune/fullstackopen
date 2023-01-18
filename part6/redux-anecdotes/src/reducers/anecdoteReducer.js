@@ -1,7 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import anecdoteService from "../services/anecdotes";
-import { createNotification, deleteNotification } from "./notificationReducer";
-
+import { setNotification } from "./notificationReducer";
 /*
 const anecdotesAtStart = [
   "If it hurts, do it more often",
@@ -44,10 +43,7 @@ export const vote = (anecdote) => {
       votes: anecdote.votes + 1,
     });
     dispatch(updateAnecdote(newAnecdote));
-    dispatch(createNotification(`you voted '${newAnecdote.content}'`));
-    setTimeout(() => {
-      dispatch(deleteNotification());
-    }, 5000);
+    dispatch(setNotification(`you voted '${newAnecdote.content}'`, 5));
   };
 };
 
