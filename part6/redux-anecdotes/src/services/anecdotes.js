@@ -12,5 +12,11 @@ const createNew = async (newAnecdote) => {
   return response.data;
 };
 
-const exports = { getAll, createNew };
+const put = async (newAnecdote) => {
+  const url = baseUrl + "/" + newAnecdote.id;
+  const response = await axios.put(url, newAnecdote);
+  return response.data;
+};
+
+const exports = { getAll, createNew, put };
 export default exports;

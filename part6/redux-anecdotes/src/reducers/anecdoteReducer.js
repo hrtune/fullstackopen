@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import anecdoteService from "../services/anecdotes";
+import { createNotification, deleteNotification } from "./notificationReducer";
 
 /*
 const anecdotesAtStart = [
@@ -36,6 +37,20 @@ export const createNewAnecdote = (anecdoteContent) => {
   };
 };
 
+export const vote = (anecdote) => {
+  return async (dispatch) => {
+    const newAnecdote = await anecdoteService.put({
+      ...anecdote,
+      votes: anecdote.votes + 1,
+    });
+    dispatch(updateAnecdote(newAnecdote));
+    dispatch(createNotification(`you voted '${newAnecdote.content}'`));
+    setTimeout(() => {
+      dispatch(deleteNotification());
+    }, 5000);
+  };
+};
+
 const sortState = (state) => {
   return state.sort((a, b) => b.votes - a.votes);
 };
@@ -67,9 +82,15 @@ const anecdoteSlice = createSlice({
     setAnecdotes(state, action) {
       return sortState(action.payload);
     },
+    updateAnecdote(state, action) {
+      const newAnecdote = action.payload;
+      const id = newAnecdote.id;
+      const newState = state.map((a) => (a.id === id ? newAnecdote : a));
+      return sortState(newState);
+    },
   },
 });
 
-export const { createAnecdote, voteToAnecdote, setAnecdotes } =
+export const { createAnecdote, updateAnecdote, setAnecdotes } =
   anecdoteSlice.actions;
 export default anecdoteSlice.reducer;
