@@ -45,6 +45,7 @@ const anecdoteSlice = createSlice({
             }
           : s
       );
+
       return sortState(newState);
     },
   },
