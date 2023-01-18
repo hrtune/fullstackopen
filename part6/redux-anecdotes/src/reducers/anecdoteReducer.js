@@ -13,7 +13,7 @@ const anecdotesAtStart = [
 
 const getId = () => (100000 * Math.random()).toFixed(0);
 
-export const asObject = (anecdote) => {
+const asObject = (anecdote) => {
   return {
     content: anecdote,
     id: getId(),
@@ -25,6 +25,14 @@ export const initializeAnecdotes = () => {
   return async (dispatch) => {
     const anecdotes = await anecdoteService.getAll();
     dispatch(setAnecdotes(anecdotes));
+  };
+};
+
+export const createNewAnecdote = (anecdoteContent) => {
+  return async (dispatch) => {
+    const anecdote = asObject(anecdoteContent);
+    const newAnecdote = await anecdoteService.createNew(anecdote);
+    dispatch(createAnecdote(newAnecdote));
   };
 };
 
