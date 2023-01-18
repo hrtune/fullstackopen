@@ -12,7 +12,7 @@ const anecdotesAtStart = [
 
 const getId = () => (100000 * Math.random()).toFixed(0);
 
-const asObject = (anecdote) => {
+export const asObject = (anecdote) => {
   return {
     content: anecdote,
     id: getId(),
@@ -31,8 +31,7 @@ const anecdoteSlice = createSlice({
   initialState,
   reducers: {
     createAnecdote(state, action) {
-      const content = action.payload;
-      const anecdoteObject = asObject(content);
+      const anecdoteObject = action.payload;
       state.push(anecdoteObject);
       return sortState(state);
     },
