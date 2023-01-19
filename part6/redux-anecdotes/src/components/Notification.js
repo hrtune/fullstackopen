@@ -16,7 +16,7 @@ const Notification = ({ notification }) => {
 
 const mapStateToProps = (state) => {
   return {
-    notification: state.notification,
+    notification: state.notification.text,
   };
 };
 
