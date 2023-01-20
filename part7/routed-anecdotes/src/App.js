@@ -126,7 +126,8 @@ const CreateNew = (props) => {
         </div>
         <button type="submit">create</button>
         <button
-          onClick={() => {
+          onClick={(event) => {
+            event.preventDefault();
             content.clearValue();
             author.clearValue();
             info.clearValue();
