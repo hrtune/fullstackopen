@@ -1,4 +1,4 @@
-import { Routes, Route, Link, useMatch } from "react-router-dom";
+import { Routes, Route, Link, useMatch, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 const Menu = () => {
@@ -36,7 +36,9 @@ const AnecdoteList = ({ anecdotes }) => (
 const Anecdote = ({ anecdote }) => {
   return (
     <div>
-      <h2>{anecdote.content}</h2>
+      <h2>
+        {anecdote.content} by {anecdote.author}
+      </h2>
       <div>
         <p>has {anecdote.votes} votes</p>
       </div>
@@ -87,6 +89,8 @@ const CreateNew = (props) => {
   const [author, setAuthor] = useState("");
   const [info, setInfo] = useState("");
 
+  const navigate = useNavigate();
+
   const handleSubmit = (e) => {
     e.preventDefault();
     props.addNew({
@@ -95,6 +99,7 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     });
+    navigate(`/`);
   };
 
   return (
@@ -154,10 +159,14 @@ const App = () => {
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000);
     setAnecdotes(anecdotes.concat(anecdote));
+    setNotification(`a new anecdote ${anecdote.content} created!`);
+    setTimeout(() => setNotification(""), 5000);
+    return anecdote.id;
   };
 
   const anecdoteById = (id) => anecdotes.find((a) => a.id === id);
 
+  // eslint-disable-next-line
   const vote = (id) => {
     const anecdote = anecdoteById(id);
 
@@ -178,6 +187,7 @@ const App = () => {
     <div>
       <h1>Software anecdotes</h1>
       <Menu />
+      {notification ? <p>{notification}</p> : null}
       <Routes>
         <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
         <Route
