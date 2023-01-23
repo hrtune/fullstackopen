@@ -1,0 +1,23 @@
+###
+POST http://localhost:3003/api/login
+Content-Type: application/json
+
+{
+    "username": "johncena",
+    "password": "bingchilling"
+}
+
+###
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImpvaG5jZW5hIiwiaWQiOiI2M2FjNDk2NDVjOGIwMmU2ZmNlMDA5ZTciLCJpYXQiOjE2NzI5MTQwMjQsImV4cCI6MTY3MjkxNzYyNH0.4-kAyOMx6DccSghEUKN89ko_p-SgjjHkfX6GsJ2aWro
+
+{
+    "title": "I love icecream",
+    "author": "Some Chinese",
+    "url": "http://example.com",
+    "likes": 0
+}
+
+###
+GET http://localhost:3003/api/blogs
