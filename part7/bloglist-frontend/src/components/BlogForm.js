@@ -1,65 +1,72 @@
-import { useState } from 'react'
+import { useSelector, useDispatch } from "react-redux";
+import { setTitle, setAuthor, setUrl } from "../reducers/blogFormReducer";
 
 const BlogForm = ({ handleCreate }) => {
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+  const dispatch = useDispatch();
+  const { title, author, url } = useSelector((state) => state.blogForm);
 
   const addBlog = (event) => {
-    event.preventDefault()
+    event.preventDefault();
     const newBlog = {
       title,
       author,
       url,
-      likes: 0
-    }
+      likes: 0,
+    };
 
-    handleCreate(newBlog)
+    handleCreate(newBlog);
 
-    setTitle('')
-    setAuthor('')
-    setUrl('')
-
-  }
+    dispatch(setTitle(""));
+    dispatch(setAuthor(""));
+    dispatch(setUrl(""));
+  };
 
   return (
     <div>
       <h2>create new</h2>
       <form onSubmit={addBlog}>
         <div>
-            title:
+          title:
           <input
             id="blogform-title"
             type="text"
             name="Title"
             value={title}
-            onChange={({ target }) => setTitle(target.value)}
+            onChange={({ target }) => {
+              dispatch(setTitle(target.value));
+            }}
           />
         </div>
         <div>
-            author:
+          author:
           <input
             id="blogform-author"
             type="text"
             name="Author"
             value={author}
-            onChange={({ target }) => setAuthor(target.value)}
+            onChange={({ target }) => {
+              dispatch(setAuthor(target.value));
+            }}
           />
         </div>
         <div>
-            url:
+          url:
           <input
             id="blogform-url"
             type="text"
             name="Url"
             value={url}
-            onChange={({ target }) => setUrl(target.value)}
+            onChange={({ target }) => {
+              dispatch(setUrl(target.value));
+            }}
           />
         </div>
-        <button id="blogform-submit" type="submit">create</button>
+        <button id="blogform-submit" type="submit">
+          create
+        </button>
       </form>
     </div>
-  )
-}
+  );
+};
 
-export default BlogForm
+export default BlogForm;

@@ -1,78 +1,66 @@
-import { useState } from 'react'
-import blogService  from '../services/blogs'
+import { useDispatch } from "react-redux";
+import { removeBlog, changeView, likeBlog } from "../reducers/blogReducer";
 
-const Blog = ({ blog, owned, handleLike }) => {
+const Blog = ({ blog, owned }) => {
+  const dispatch = useDispatch();
   const blogStyle = {
     paddingTop: 10,
     paddingLeft: 2,
-    border: 'solid',
+    border: "solid",
     borderWidth: 1,
-    marginBottom: 5
-  }
-
-  const [viewMode, setViewMode] = useState(false)
-  const [likes, setLikes] = useState(blog.likes)
-  const [removed, setRemoved] = useState(false)
+    marginBottom: 5,
+  };
 
   const handleClick = () => {
-    setViewMode(!viewMode)
-  }
+    dispatch(changeView(blog.id));
+  };
 
   const handleRemove = async () => {
-    if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
-      await blogService.remove(blog.id)
-      setRemoved(true)
-    }
-  }
+    dispatch(removeBlog(blog));
+  };
 
-  if (!handleLike) {
-    handleLike = async () => {
-      const newBlog = {
-        ...blog,
-        user: blog.user.id,
-        likes: likes + 1
-      }
-
-      try {
-        const updatedBlog = await blogService.update(newBlog)
-        console.log(`likes : ${likes} -> ${updatedBlog.likes} (${blog.title})`)
-        setLikes(updatedBlog.likes)
-      } catch (exception) {
-        console.log(exception.message)
-      }
-
-
-    }
-  }
+  const handleLike = async () => {
+    dispatch(likeBlog(blog));
+  };
 
   const simplifiedBlog = () => (
     <div style={blogStyle} className="blog-simple">
-      {blog.title} {blog.author} <button id="show-button" onClick={handleClick}>ℹ️</button>
+      {blog.title} {blog.author}{" "}
+      <button id="show-button" onClick={handleClick}>
+        ℹ️
+      </button>
     </div>
-
-  )
+  );
 
   const detailedBlog = () => (
     <div style={blogStyle} className="blog-detail">
-      {blog.title} <button id="hide-button" onClick={handleClick}>🙈</button> <br />
-      <div className='blog-url'>
+      {blog.title}{" "}
+      <button id="hide-button" onClick={handleClick}>
+        🙈
+      </button>{" "}
+      <br />
+      <div className="blog-url">
         {blog.url} <br />
       </div>
-      <div className='blog-likes'>
-        likes {likes} <button id="like-button" onClick={handleLike}>like</button> <br />
+      <div className="blog-likes">
+        likes {blog.likes}{" "}
+        <button id="like-button" onClick={handleLike}>
+          like
+        </button>{" "}
+        <br />
       </div>
       {blog.author} <br />
-      { owned && (
-        <div className='remove-button'>
-          <button id="remove-button" onClick={handleRemove}>remove</button>
+      {owned && (
+        <div className="remove-button">
+          <button id="remove-button" onClick={handleRemove}>
+            remove
+          </button>
         </div>
       )}
     </div>
-  )
+  );
 
-  return (
-    removed || (viewMode ? detailedBlog() : simplifiedBlog())
-  )
-}
+  return blog.viewMode ? detailedBlog() : simplifiedBlog();
+};
 
-export default Blog
+export default Blog;
