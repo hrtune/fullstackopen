@@ -1,15 +1,13 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { initializeBlogs, createBlog } from "./reducers/blogReducer";
+import { initializeBlogs } from "./reducers/blogReducer";
+import { useState } from "react";
+import { initializeUsers } from "./reducers/userReducer";
 import Blog from "./components/Blog";
+import Users from "./components/Users";
 import Notification from "./components/Notification";
 import blogService from "./services/blogs";
-import {
-  login,
-  setUsername,
-  setPassword,
-  setUser,
-} from "./reducers/loginReducer";
+import { login, setUser } from "./reducers/loginReducer";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
 import "./App.css";
@@ -18,11 +16,12 @@ const App = () => {
   const dispatch = useDispatch();
   const notification = useSelector((state) => state.notification);
   const blogs = useSelector((state) => state.blogs);
-  const { username, password, user } = useSelector((state) => state.login);
+  const { user } = useSelector((state) => state.login);
 
-  // load all blogs
+  // load all resources
   useEffect(() => {
     dispatch(initializeBlogs());
+    dispatch(initializeUsers());
   }, [dispatch]);
 
   // load login information
@@ -36,21 +35,18 @@ const App = () => {
     }
   }, [dispatch]);
 
-  const handleLogin = async (event) => {
-    event.preventDefault();
-    dispatch(login(username, password));
-  };
-
   const handleLogout = async () => {
     window.localStorage.removeItem("loggedBloglistUser");
     dispatch(setUser(null));
   };
 
-  const handleCreate = async (blog) => {
-    dispatch(createBlog(blog));
-  };
-
   const LoginPage = () => {
+    const [username, setUsername] = useState("");
+    const [password, setPassword] = useState("");
+    const handleLogin = async (event) => {
+      event.preventDefault();
+      dispatch(login(username, password));
+    };
     return (
       <div>
         <h2>log in to application</h2>
@@ -63,7 +59,7 @@ const App = () => {
               type="text"
               value={username}
               name="Username"
-              onChange={({ target }) => dispatch(setUsername(target.value))}
+              onChange={({ target }) => setUsername(target.value)}
             />
           </div>
           <div>
@@ -73,7 +69,7 @@ const App = () => {
               type="password"
               value={password}
               name="Password"
-              onChange={({ target }) => dispatch(setPassword(target.value))}
+              onChange={({ target }) => setPassword(target.value)}
             />
           </div>
           <button type="submit">login</button>
@@ -82,7 +78,7 @@ const App = () => {
     );
   };
 
-  const BlogPage = () => {
+  const Blogs = () => {
     return (
       <div>
         <h2>blogs</h2>
@@ -92,7 +88,7 @@ const App = () => {
           <button onClick={handleLogout}>logout</button>
         </p>
         <Togglable buttonLabel="new blog">
-          <BlogForm handleCreate={handleCreate} />
+          <BlogForm />
         </Togglable>
         {blogs.map((blog) => (
           <Blog key={blog.id} blog={blog} owned={user.id === blog.user.id} />
@@ -101,7 +97,14 @@ const App = () => {
     );
   };
 
-  return user === null ? LoginPage() : BlogPage();
+  const MainPage = () => (
+    <div>
+      <Blogs />
+      <Users />
+    </div>
+  );
+
+  return user === null ? <LoginPage /> : <MainPage />;
 };
 
 export default App;

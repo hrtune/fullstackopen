@@ -1,7 +1,8 @@
 import { useSelector, useDispatch } from "react-redux";
 import { setTitle, setAuthor, setUrl } from "../reducers/blogFormReducer";
+import { createBlog } from "../reducers/blogReducer";
 
-const BlogForm = ({ handleCreate }) => {
+const BlogForm = () => {
   const dispatch = useDispatch();
   const { title, author, url } = useSelector((state) => state.blogForm);
 
@@ -14,7 +15,7 @@ const BlogForm = ({ handleCreate }) => {
       likes: 0,
     };
 
-    handleCreate(newBlog);
+    dispatch(createBlog(newBlog));
 
     dispatch(setTitle(""));
     dispatch(setAuthor(""));

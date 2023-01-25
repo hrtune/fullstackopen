@@ -1,6 +1,7 @@
 import blogService from "../services/blogs";
 import { createSlice } from "@reduxjs/toolkit";
 import { setNotification } from "./notificationReducer";
+import { addBlogToUser, removeBlogFromUser } from "./userReducer";
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
@@ -15,11 +16,19 @@ const TIMEOUT = 2.5;
 export const createBlog = (blog) => {
   return async (dispatch) => {
     try {
-      const newBlog = await blogService.create(blog);
+      const responseBlog = await blogService.create(blog);
+
+      const newBlog = {
+        ...responseBlog,
+        user: {
+          id: responseBlog.user,
+        },
+      };
 
       console.log(`blog ${newBlog.title} has created`);
 
       dispatch(addBlog(newBlog));
+      dispatch(addBlogToUser(newBlog));
       dispatch(sortBlogs());
 
       dispatch(
@@ -47,6 +56,7 @@ export const removeBlog = (blog) => {
           console.log(`blog: ${blog.title} has been removed`);
         }
         dispatch(deleteBlog(blog.id));
+        dispatch(removeBlogFromUser(blog));
         setNotification(`blog: ${blog.title} removed`, TIMEOUT);
       } catch (exeption) {
         setNotification("something wrong", TIMEOUT, true);

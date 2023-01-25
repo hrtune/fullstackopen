@@ -20,14 +20,11 @@ export const login = (username, password) => {
       window.localStorage.setItem("loggedBloglistUser", JSON.stringify(user));
       dispatch(setUser(user));
       console.log(`user ${username} has logged in`);
-      dispatch(setUsername(""));
-      dispatch(setPassword(""));
     } catch (exception) {
       dispatch(
         setNotification("username or password is incorrect", TIMEOUT, true)
       );
       console.log(exception.message);
-      dispatch(setPassword(""));
     }
   };
 };
