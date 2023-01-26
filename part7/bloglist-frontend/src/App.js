@@ -7,7 +7,7 @@ import Header from "./components/Header";
 import Blog from "./components/Blog";
 import Users from "./components/Users";
 import Notification from "./components/Notification";
-import { login, getUserInfo } from "./reducers/loginReducer";
+import { login, getUserInfo, logout } from "./reducers/loginReducer";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
 import { Routes, Route, Link } from "react-router-dom";
@@ -91,8 +91,25 @@ const App = () => {
     );
   };
 
+  const Navigation = () => {
+    const navStyle = {
+      background: "gray",
+      height: "23px",
+    };
+    return (
+      <div style={navStyle}>
+        <p>
+          <Link to="/">blogs</Link>|<Link to="/users">users</Link>|{user.name}{" "}
+          logged in
+          <button onClick={() => dispatch(logout())}>logout</button>
+        </p>
+      </div>
+    );
+  };
+
   const MainPage = () => (
     <div>
+      <Navigation />
       <Routes>
         <Route path="/" element={<Blogs />} />
         <Route path="/users" element={<Users />} />
