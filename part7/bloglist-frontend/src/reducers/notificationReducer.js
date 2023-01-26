@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
   id: undefined,
-  text: "",
+  message: "",
   error: false,
 };
 
@@ -27,19 +27,19 @@ const notificationSlice = createSlice({
   reducers: {
     createErrorNotification(state, action) {
       const notification = action.payload;
-      state.text = notification;
+      state.message = notification;
       state.error = true;
       return state;
     },
     createSuccessNotification(state, action) {
       const notification = action.payload;
-      state.text = notification;
+      state.message = notification;
       state.error = false;
       return state;
     },
     deleteNotification(state, action) {
       clearTimeout(state.id);
-      state.text = "";
+      state.message = "";
       state.id = undefined;
       state.error = false;
       return state;

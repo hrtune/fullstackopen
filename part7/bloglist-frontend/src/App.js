@@ -3,20 +3,20 @@ import { useDispatch, useSelector } from "react-redux";
 import { initializeBlogs } from "./reducers/blogReducer";
 import { useState } from "react";
 import { initializeUsers } from "./reducers/userReducer";
+import Header from "./components/Header";
 import Blog from "./components/Blog";
 import Users from "./components/Users";
 import Notification from "./components/Notification";
-import blogService from "./services/blogs";
-import { login, setUser } from "./reducers/loginReducer";
+import { login, getUserInfo } from "./reducers/loginReducer";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
+import { Routes, Route } from "react-router-dom";
 import "./App.css";
 
 const App = () => {
   const dispatch = useDispatch();
-  const notification = useSelector((state) => state.notification);
   const blogs = useSelector((state) => state.blogs);
-  const { user } = useSelector((state) => state.login);
+  const user = useSelector((state) => state.login);
 
   // load all resources
   useEffect(() => {
@@ -26,19 +26,8 @@ const App = () => {
 
   // load login information
   useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBloglistUser");
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      console.log(`user ${user.username} has logged in`);
-      dispatch(setUser(user));
-      blogService.setToken(user.token);
-    }
+    dispatch(getUserInfo());
   }, [dispatch]);
-
-  const handleLogout = async () => {
-    window.localStorage.removeItem("loggedBloglistUser");
-    dispatch(setUser(null));
-  };
 
   const LoginPage = () => {
     const [username, setUsername] = useState("");
@@ -50,7 +39,7 @@ const App = () => {
     return (
       <div>
         <h2>log in to application</h2>
-        <Notification message={notification.text} error={notification.error} />
+        <Notification />
         <form onSubmit={handleLogin}>
           <div>
             username
@@ -81,12 +70,7 @@ const App = () => {
   const Blogs = () => {
     return (
       <div>
-        <h2>blogs</h2>
-        <Notification message={notification.text} error={notification.error} />
-        <p>
-          {user.name} logged in
-          <button onClick={handleLogout}>logout</button>
-        </p>
+        <Header />
         <Togglable buttonLabel="new blog">
           <BlogForm />
         </Togglable>
@@ -99,12 +83,14 @@ const App = () => {
 
   const MainPage = () => (
     <div>
-      <Blogs />
-      <Users />
+      <Routes>
+        <Route path="/" element={<Blogs />} />
+        <Route path="/users" element={<Users />} />
+      </Routes>
     </div>
   );
 
-  return user === null ? <LoginPage /> : <MainPage />;
+  return <div>{user === null ? <LoginPage /> : <MainPage />}</div>;
 };
 
 export default App;

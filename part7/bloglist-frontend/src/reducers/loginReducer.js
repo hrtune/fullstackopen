@@ -3,13 +3,19 @@ import loginService from "../services/login";
 import blogService from "../services/blogs";
 import { setNotification } from "./notificationReducer";
 
-const initialState = {
-  username: "",
-  password: "",
-  user: null,
-};
-
 const TIMEOUT = 2.5;
+
+export const getUserInfo = () => {
+  return (dispatch) => {
+    const loggedUserJSON = window.localStorage.getItem("loggedBloglistUser");
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      console.log(`user ${user.username} has logged in`);
+      dispatch(setUser(user));
+      blogService.setToken(user.token);
+    }
+  };
+};
 
 export const login = (username, password) => {
   return async (dispatch) => {
@@ -29,28 +35,25 @@ export const login = (username, password) => {
   };
 };
 
+export const logout = () => {
+  return (dispatch) => {
+    window.localStorage.removeItem("loggedBloglistUser");
+    dispatch(setUser(null));
+  };
+};
+
 const loginSlice = createSlice({
   name: "login",
-  initialState,
+  initialState: null,
   reducers: {
-    setUsername(state, action) {
-      const username = action.payload;
-      state.username = username;
-      return state;
-    },
-    setPassword(state, action) {
-      const password = action.payload;
-      state.password = password;
-      return state;
-    },
     setUser(state, action) {
       const user = action.payload;
-      state.user = user;
+      state = user;
       return state;
     },
   },
 });
 
-export const { setUsername, setPassword, setUser } = loginSlice.actions;
+export const { setUser } = loginSlice.actions;
 
 export default loginSlice.reducer;

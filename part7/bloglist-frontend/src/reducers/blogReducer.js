@@ -16,14 +16,7 @@ const TIMEOUT = 2.5;
 export const createBlog = (blog) => {
   return async (dispatch) => {
     try {
-      const responseBlog = await blogService.create(blog);
-
-      const newBlog = {
-        ...responseBlog,
-        user: {
-          id: responseBlog.user,
-        },
-      };
+      const newBlog = await blogService.create(blog);
 
       console.log(`blog ${newBlog.title} has created`);
 
