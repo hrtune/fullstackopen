@@ -11,6 +11,7 @@ import { login, getUserInfo } from "./reducers/loginReducer";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
 import { Routes, Route } from "react-router-dom";
+import User from "./components/User";
 import "./App.css";
 
 const App = () => {
@@ -86,6 +87,7 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Blogs />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/users/:id" element={<User />} />
       </Routes>
     </div>
   );
