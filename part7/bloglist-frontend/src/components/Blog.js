@@ -1,66 +1,37 @@
-import { useDispatch } from "react-redux";
-import { removeBlog, changeView, likeBlog } from "../reducers/blogReducer";
+import { useSelector, useDispatch } from "react-redux";
+import { useParams } from "react-router-dom";
+import { likeBlog } from "../reducers/blogReducer";
+import Header from "./Header";
 
-const Blog = ({ blog, owned }) => {
+const Blog = () => {
+  const blogs = useSelector((state) => state.blogs);
+  const id = useParams().id;
+  const blog = blogs.find((b) => b.id === id);
+
   const dispatch = useDispatch();
-  const blogStyle = {
-    paddingTop: 10,
-    paddingLeft: 2,
-    border: "solid",
-    borderWidth: 1,
-    marginBottom: 5,
-  };
-
-  const handleClick = () => {
-    dispatch(changeView(blog.id));
-  };
-
-  const handleRemove = async () => {
-    dispatch(removeBlog(blog));
-  };
 
   const handleLike = async () => {
     dispatch(likeBlog(blog));
   };
 
-  const simplifiedBlog = () => (
-    <div style={blogStyle} className="blog-simple">
-      {blog.title} {blog.author}{" "}
-      <button id="show-button" onClick={handleClick}>
-        ℹ️
-      </button>
-    </div>
-  );
-
-  const detailedBlog = () => (
-    <div style={blogStyle} className="blog-detail">
-      {blog.title}{" "}
-      <button id="hide-button" onClick={handleClick}>
-        🙈
-      </button>{" "}
+  if (!blog) {
+    return null;
+  }
+  return (
+    <div>
+      <Header />
+      <h1>
+        {blog.title} by {blog.author}
+      </h1>
+      <a href={blog.url}>{blog.url}</a>
       <br />
-      <div className="blog-url">
-        {blog.url} <br />
+      <div>
+        {blog.likes} likes<button onClick={handleLike}>👍</button>
       </div>
-      <div className="blog-likes">
-        likes {blog.likes}{" "}
-        <button id="like-button" onClick={handleLike}>
-          like
-        </button>{" "}
-        <br />
-      </div>
-      {blog.author} <br />
-      {owned && (
-        <div className="remove-button">
-          <button id="remove-button" onClick={handleRemove}>
-            remove
-          </button>
-        </div>
-      )}
+      <br />
+      <div>added by {blog.user.name}</div>
     </div>
   );
-
-  return blog.viewMode ? detailedBlog() : simplifiedBlog();
 };
 
 export default Blog;

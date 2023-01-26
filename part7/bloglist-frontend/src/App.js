@@ -10,7 +10,7 @@ import Notification from "./components/Notification";
 import { login, getUserInfo } from "./reducers/loginReducer";
 import BlogForm from "./components/BlogForm";
 import Togglable from "./components/Togglable";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Link } from "react-router-dom";
 import User from "./components/User";
 import "./App.css";
 
@@ -69,6 +69,13 @@ const App = () => {
   };
 
   const Blogs = () => {
+    const blogStyle = {
+      paddingTop: 10,
+      paddingLeft: 2,
+      border: "solid",
+      borderWidth: 1,
+      marginBottom: 5,
+    };
     return (
       <div>
         <Header />
@@ -76,7 +83,9 @@ const App = () => {
           <BlogForm />
         </Togglable>
         {blogs.map((blog) => (
-          <Blog key={blog.id} blog={blog} owned={user.id === blog.user.id} />
+          <div key={blog.id} style={blogStyle}>
+            <Link to={`/blogs/${blog.id}`}>{blog.title}</Link>
+          </div>
         ))}
       </div>
     );
@@ -88,6 +97,7 @@ const App = () => {
         <Route path="/" element={<Blogs />} />
         <Route path="/users" element={<Users />} />
         <Route path="/users/:id" element={<User />} />
+        <Route path="/blogs/:id" element={<Blog />} />
       </Routes>
     </div>
   );

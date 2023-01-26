@@ -77,6 +77,7 @@ export const likeBlog = (blog) => {
           viewMode: blog.viewMode,
         })
       );
+      dispatch(sortBlogs());
     } catch (exception) {
       console.log(exception.message);
     }
@@ -89,18 +90,12 @@ const blogSlice = createSlice({
   reducers: {
     setBlogs(state, action) {
       const blogs = action.payload;
-      state = blogs.map((b) => ({
-        ...b,
-        viewMode: false,
-      }));
+      state = blogs;
       return state;
     },
     addBlog(state, action) {
       const blog = action.payload;
-      return state.concat({
-        ...blog,
-        viewMode: false,
-      });
+      return state.concat(blog);
     },
     deleteBlog(state, action) {
       const id = action.payload;
@@ -139,7 +134,6 @@ const blogSlice = createSlice({
   },
 });
 
-export const { changeView } = blogSlice.actions;
 const { setBlogs, addBlog, sortBlogs, deleteBlog, updateBlog } =
   blogSlice.actions;
 
