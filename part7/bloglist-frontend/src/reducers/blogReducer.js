@@ -40,6 +40,17 @@ export const createBlog = (blog) => {
   };
 };
 
+export const createComment = ({ blogId, comment }) => {
+  return async (dispatch) => {
+    try {
+      await blogService.addComment({ blogId, comment });
+      dispatch(addComment({ id: blogId, comment }));
+    } catch (exception) {
+      dispatch(setNotification("something wrong"));
+    }
+  };
+};
+
 export const removeBlog = (blog) => {
   return async (dispatch) => {
     if (window.confirm(`Remove blog ${blog.title} by ${blog.author}?`)) {
@@ -131,10 +142,22 @@ const blogSlice = createSlice({
       state.sort((a, b) => b.likes - a.likes);
       return state;
     },
+    addComment(state, action) {
+      const id = action.payload.id;
+      const comment = action.payload.comment;
+      return state.map((b) =>
+        b.id === id
+          ? {
+              ...b,
+              comments: b.comments.concat(comment),
+            }
+          : b
+      );
+    },
   },
 });
 
-const { setBlogs, addBlog, sortBlogs, deleteBlog, updateBlog } =
+const { setBlogs, addBlog, sortBlogs, deleteBlog, updateBlog, addComment } =
   blogSlice.actions;
 
 export default blogSlice.reducer;

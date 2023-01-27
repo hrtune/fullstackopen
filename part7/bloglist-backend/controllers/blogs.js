@@ -41,13 +41,14 @@ blogsRouter.get("/:id", async (request, response) => {
 blogsRouter.post("/:id/comments", async (request, response) => {
   const id = request.params.id;
   const comment = request.body.comment;
-  /*
+
   const user = request.user;
   if (!user) {
     return response.status(401).json({
       error: "token missing or invalid",
     });
-  } */
+  }
+
   if (!comment) {
     return response.status(400).json({
       error: "comment cannot be empty",
@@ -62,8 +63,13 @@ blogsRouter.post("/:id/comments", async (request, response) => {
   }
 
   blog.comments = blog.comments.concat(comment);
-  const savedBlog = await blog.save();
-  response.status(201).json(savedBlog);
+  if (await blog.save()) {
+    response.status(201).json({ comment });
+  } else {
+    response.status(500).json({
+      error: "something wrong",
+    });
+  }
 });
 
 blogsRouter.get("/:id/comments", async (request, response) => {
