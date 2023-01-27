@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { initializeBlogs } from "./reducers/blogReducer";
 import { useState } from "react";
 import { initializeUsers } from "./reducers/userReducer";
+import { Button, Navbar, Container } from "react-bootstrap";
 import Header from "./components/Header";
 import Blog from "./components/Blog";
 import Users from "./components/Users";
@@ -92,18 +93,26 @@ const App = () => {
   };
 
   const Navigation = () => {
-    const navStyle = {
-      background: "gray",
-      height: "23px",
-    };
     return (
-      <div style={navStyle}>
-        <p>
-          <Link to="/">blogs</Link>|<Link to="/users">users</Link>|{user.name}{" "}
-          logged in
-          <button onClick={() => dispatch(logout())}>logout</button>
-        </p>
-      </div>
+      <Navbar bg="dark" variant="dark">
+        <Container>
+          <Navbar.Brand>Blog app</Navbar.Brand>
+          <Navbar.Toggle />
+          <Navbar.Text>
+            <Link to="/">blogs</Link>
+          </Navbar.Text>
+          <Navbar.Text>&nbsp;/&nbsp;</Navbar.Text>
+          <Navbar.Text>
+            <Link to="/users">users</Link>
+          </Navbar.Text>
+          <Navbar.Collapse className="justify-content-end">
+            <Navbar.Text>Signed in as: {user.name}</Navbar.Text>
+            <Navbar.Text>
+              <Button onClick={() => dispatch(logout())}>logout</Button>
+            </Navbar.Text>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
     );
   };
 
@@ -119,7 +128,11 @@ const App = () => {
     </div>
   );
 
-  return <div>{user === null ? <LoginPage /> : <MainPage />}</div>;
+  return (
+    <div className="container">
+      {user === null ? <LoginPage /> : <MainPage />}
+    </div>
+  );
 };
 
 export default App;
