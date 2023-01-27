@@ -1,0 +1,15 @@
+GET http://localhost:3003/api/blogs
+
+###
+GET http://localhost:3003/api/blogs/63d25f6539c4014aa185fb2f
+
+###
+GET http://localhost:3003/api/blogs/63d25f6539c4014aa185fb2f/comments
+
+###
+POST http://localhost:3003/api/blogs/63d25f6539c4014aa185fb2f/comments
+Content-Type: application/json
+
+{
+    "comment": "I woke up at 6:00 a.m."
+}

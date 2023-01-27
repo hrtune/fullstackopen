@@ -14,6 +14,27 @@ const Blog = () => {
     dispatch(likeBlog(blog));
   };
 
+  const Comments = () => {
+    const comments = blog.comments;
+    let i = 0;
+    return (
+      <div>
+        <h3>comments</h3>
+        {comments ? (
+          <ul>
+            {comments.map((c) => {
+              const e = <li key={i}>{c}</li>;
+              i++;
+              return e;
+            })}
+          </ul>
+        ) : (
+          <p>No comments</p>
+        )}
+      </div>
+    );
+  };
+
   if (!blog) {
     return null;
   }
@@ -30,6 +51,7 @@ const Blog = () => {
       </div>
       <br />
       <div>added by {blog.user.name}</div>
+      <Comments />
     </div>
   );
 };

@@ -38,6 +38,42 @@ blogsRouter.get("/:id", async (request, response) => {
   response.json(blog);
 });
 
+blogsRouter.post("/:id/comments", async (request, response) => {
+  const id = request.params.id;
+  const comment = request.body.comment;
+  /*
+  const user = request.user;
+  if (!user) {
+    return response.status(401).json({
+      error: "token missing or invalid",
+    });
+  } */
+  if (!comment) {
+    return response.status(400).json({
+      error: "comment cannot be empty",
+    });
+  }
+
+  const blog = await Blog.findById(id);
+  if (!blog) {
+    return response.status(400).json({
+      error: "no such blog",
+    });
+  }
+
+  blog.comments = blog.comments.concat(comment);
+  const savedBlog = await blog.save();
+  response.status(201).json(savedBlog);
+});
+
+blogsRouter.get("/:id/comments", async (request, response) => {
+  const id = request.params.id;
+  const blog = await Blog.findById(id);
+  response.json({
+    comments: blog.comments,
+  });
+});
+
 blogsRouter.delete("/:id", async (request, response) => {
   const blogId = request.params.id;
   const blog = await Blog.findById(blogId);
