@@ -23,7 +23,11 @@ let authors = [
   {
     name: "Sandi Metz", // birthyear not known
     id: "afa5b6f3-344d-11e9-a414-719c6709cf3e",
-  },
+  } /*
+  {
+    name: "John Cena",
+    id: "afa5b6f3-344d-11e9-a414-719c6709cf30",
+  }, */,
 ];
 
 /*
@@ -97,6 +101,7 @@ const typeDefs = gql`
     bookCount: Int!
     authorCount: Int!
     allBooks: [Book!]!
+    allAuthors: [Author!]!
   }
 
   type Book {
@@ -106,6 +111,13 @@ const typeDefs = gql`
     id: ID!
     genres: [String!]!
   }
+
+  type Author {
+    name: String!
+    id: ID!
+    born: Int
+    bookCount: Int!
+  }
 `;
 
 const resolvers = {
@@ -113,6 +125,14 @@ const resolvers = {
     bookCount: () => books.length,
     authorCount: () => authors.length,
     allBooks: () => books,
+    allAuthors: () =>
+      authors.map((a) => {
+        const bookCount = books.filter((b) => b.author === a.name).length;
+        return {
+          ...a,
+          bookCount,
+        };
+      }),
   },
 };
 
