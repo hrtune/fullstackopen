@@ -40,7 +40,10 @@ const Authors = (props) => {
         </tbody>
       </table>
 
-      <SetBirthyear editBirth={editBirth} />
+      <SetBirthyear
+        authors={authors.map((a) => a.name)}
+        editBirth={editBirth}
+      />
     </div>
   );
 };
