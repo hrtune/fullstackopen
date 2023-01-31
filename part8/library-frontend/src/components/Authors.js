@@ -1,8 +1,15 @@
-import { ALL_AUTHORS } from "../queries";
-import { useQuery } from "@apollo/client";
+import { ALL_AUTHORS, EDIT_BIRTH } from "../queries";
+import { useQuery, useMutation } from "@apollo/client";
+import SetBirthyear from "./SetBirthyear";
 
 const Authors = (props) => {
   const result = useQuery(ALL_AUTHORS);
+
+  // define here in order to re-render this component
+  const [editBirth] = useMutation(EDIT_BIRTH, {
+    refetchQueries: [{ query: ALL_AUTHORS }],
+  });
+
   if (!props.show) {
     return null;
   }
@@ -32,6 +39,8 @@ const Authors = (props) => {
           ))}
         </tbody>
       </table>
+
+      <SetBirthyear editBirth={editBirth} />
     </div>
   );
 };

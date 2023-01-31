@@ -42,3 +42,21 @@ export const ADD_BOOK = gql`
     }
   }
 `;
+
+export const EDIT_BIRTH = gql`
+  mutation EditAuthor($name: String!, $setBornTo: Int!) {
+    editAuthor(name: $name, setBornTo: $setBornTo) {
+      name
+      born
+      id
+    }
+  }
+`;
+
+/*
+mutation {
+  editAuthor(name: "Reijo Mäki", setBornTo: 1958) {
+    name
+    born
+  }
+} */
