@@ -1,4 +1,4 @@
-const { ApolloServer, gql } = require("apollo-server");
+const { ApolloServer, gql, UserInputError } = require("apollo-server");
 const { v1: uuid } = require("uuid");
 const mongoose = require("mongoose");
 require("dotenv").config();
@@ -159,29 +159,60 @@ const resolvers = {
 
       if (!author) {
         const newAuthor = new Author({ name: args.author });
-        newAuthor.save();
+        try {
+          await newAuthor.save();
+        } catch (error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: { author: args.author },
+          });
+        }
         const newBook = new Book({ ...args, author: newAuthor });
-        return newBook.save();
+        try {
+          await newBook.save();
+        } catch (error) {
+          throw new UserInputError(error.message, {
+            invalidArgs: { ...args },
+          });
+        }
+        return newBook;
       }
 
       const newBook = new Book({ ...args, author: author });
-
-      return newBook.save();
+      try {
+        await newBook.save();
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: { ...args },
+        });
+      }
+      return newBook;
     },
 
     editAuthor: async (root, { name, setBornTo }) => {
-      return Author.findOneAndUpdate(
-        { name },
-        { born: setBornTo },
-        { new: true }
-      );
+      try {
+        return await Author.findOneAndUpdate(
+          { name },
+          { born: setBornTo },
+          { new: true }
+        );
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: { name, setBornTo },
+        });
+      }
     },
   },
 
   Author: {
     bookCount: async (root) => {
-      const books = await Book.find({ author: root });
-      return books.length;
+      try {
+        const books = await Book.find({ author: root });
+        return books.length;
+      } catch (error) {
+        throw new UserInputError(error.message, {
+          invalidArgs: { ...args },
+        });
+      }
     },
   },
 };
