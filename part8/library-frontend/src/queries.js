@@ -39,7 +39,10 @@ export const ADD_BOOK = gql`
       genres: $genres
     ) {
       title
-      author
+      author {
+        name
+        id
+      }
       published
       genres
     }
@@ -56,10 +59,10 @@ export const EDIT_BIRTH = gql`
   }
 `;
 
-/*
-mutation {
-  editAuthor(name: "Reijo Mäki", setBornTo: 1958) {
-    name
-    born
+export const LOGIN = gql`
+  mutation Login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
+      value
+    }
   }
-} */
+`;
