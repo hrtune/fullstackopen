@@ -5,14 +5,13 @@ import NewBook from "./components/NewBook";
 import Login from "./components/Login";
 import Recommend from "./components/Recommend";
 import { useApolloClient, useQuery } from "@apollo/client";
-import { ALL_BOOKS, ME } from "./queries";
+import { ME } from "./queries";
 
 const App = () => {
   const client = useApolloClient();
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null);
 
-  const booksQuery = useQuery(ALL_BOOKS);
   const meQuery = useQuery(ME);
 
   const logout = () => {
@@ -47,14 +46,13 @@ const App = () => {
 
       <Authors show={page === "authors"} />
 
-      <Books show={page === "books"} query={booksQuery} />
+      <Books show={page === "books"} />
 
       <NewBook show={page === "add"} />
 
       <Recommend
         show={page === "recommend"}
         user={meQuery.data ? meQuery.data.me : null}
-        booksQuery={booksQuery}
       />
 
       <Login show={page === "login"} setToken={setToken} setPage={setPage} />

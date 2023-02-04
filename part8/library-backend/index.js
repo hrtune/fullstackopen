@@ -116,6 +116,7 @@ const typeDefs = gql`
     authorCount: Int!
     allBooks(author: String, genre: String): [Book!]!
     allAuthors: [Author!]!
+    allGenres: [String!]!
     me: User
   }
 
@@ -155,11 +156,6 @@ const typeDefs = gql`
   type Token {
     value: String!
   }
-
-  type Mutation {
-    createUser(username: String!, favouriteGenre: String!): User
-    login(username: String!, password: String!): Token
-  }
 `;
 
 const resolvers = {
@@ -179,6 +175,13 @@ const resolvers = {
       return Book.find({}).populate("author");
     },
     allAuthors: async (root, args) => Author.find({}),
+    allGenres: async (root, args) => {
+      const arraysOfGenres = await Book.collection.distinct("genres");
+      const genreSet = new Set(
+        arraysOfGenres.reduce((arr, g) => arr.concat(g), [])
+      );
+      return Array.from(genreSet);
+    },
     me: (root, args, context) => {
       return context.currentUser;
     },

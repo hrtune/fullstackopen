@@ -1,21 +1,33 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useQuery, useLazyQuery } from "@apollo/client";
+import { ALL_GENRES, ALL_BOOKS } from "../queries";
 
 const Books = ({ show, query }) => {
+  const [books, setBooks] = useState([]);
   const [genre, setGenre] = useState("all");
+  const allGenresQuery = useQuery(ALL_GENRES);
+  const [loadBooks, booksResult] = useLazyQuery(ALL_BOOKS);
+
+  useEffect(() => {
+    if (genre === "all") {
+      loadBooks().then((result) => setBooks(result.data.allBooks));
+    } else {
+      loadBooks({
+        variables: { genre },
+      }).then((result) => setBooks(result.data.allBooks));
+    }
+  }, [genre, loadBooks]);
 
   if (!show) {
     return null;
   }
 
-  if (query.loading) {
+  if (booksResult.loading || allGenresQuery.loading) {
     return <div>loading...</div>;
   }
 
-  const books = query.data.allBooks;
-
-  const allGenres = Array.from(
-    new Set(books.reduce((arr, book) => arr.concat(book.genres), []))
-  );
+  // const books = query.data.allBooks;
+  const allGenres = allGenresQuery.data.allGenres;
 
   return (
     <div>
@@ -31,9 +43,6 @@ const Books = ({ show, query }) => {
             <th>published</th>
           </tr>
           {books.map((b) => {
-            if (!b.genres.includes(genre) && genre !== "all") {
-              return null;
-            }
             return (
               <tr key={b.title}>
                 <td>{b.title}</td>
