@@ -2,13 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
 import { setContext } from "@apollo/client/link/context";
+import { createHttpLink } from "@apollo/client";
 
-import {
-  ApolloClient,
-  ApolloProvider,
-  HttpLink,
-  InMemoryCache,
-} from "@apollo/client";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 
 const authLink = setContext((_, { headers }) => {
   const token = localStorage.getItem("libraryUserToken");
@@ -20,7 +16,7 @@ const authLink = setContext((_, { headers }) => {
   };
 });
 
-const httpLink = new HttpLink({
+const httpLink = createHttpLink({
   uri: "http://localhost:4000",
 });
 

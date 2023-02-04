@@ -1,27 +1,26 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation } from "@apollo/client";
-import { LOGIN } from "../queries";
+import { LOGIN, ME } from "../queries";
 const Login = ({ show, setToken, setPage }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
-  const [login, result] = useMutation(LOGIN, {
+  const [login] = useMutation(LOGIN, {
     onError: (error) => {
       console.log(error.message);
       setPassword("");
     },
-  });
-
-  useEffect(() => {
-    if (result.data) {
-      const token = result.data.login.value;
-      setToken(token);
+    update: (cache, response) => {
+      // We should update token before refetching ME query
+      const token = response.data.login.value;
       localStorage.setItem("libraryUserToken", token);
+      setToken(token);
       setUsername("");
       setPassword("");
       setPage("authors");
-    }
-  }, [result.data, setToken, setPage]);
+    },
+    refetchQueries: [{ query: ME }],
+  });
 
   const submit = (event) => {
     event.preventDefault();
