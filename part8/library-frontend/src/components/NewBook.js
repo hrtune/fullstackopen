@@ -1,22 +1,16 @@
 import { useState } from "react";
-import { useMutation } from "@apollo/client";
-import { ADD_BOOK, ALL_BOOKS, ALL_AUTHORS } from "../queries";
+import { ALL_BOOKS, ALL_GENRES, ALL_AUTHORS } from "../queries";
 
-const NewBook = (props) => {
+const NewBook = ({ show, addBook }) => {
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
   const [published, setPublished] = useState("");
   const [genre, setGenre] = useState("");
   const [genres, setGenres] = useState([]);
 
-  const [addBook] = useMutation(ADD_BOOK, {
-    onError: (error) => {
-      console.log(error.graphQLErrors);
-    },
-    refetchQueries: [{ query: ALL_BOOKS }, { query: ALL_AUTHORS }],
-  });
+  const deleteIcon = "x";
 
-  if (!props.show) {
+  if (!show) {
     return null;
   }
 
@@ -32,6 +26,21 @@ const NewBook = (props) => {
         published: Number(published),
         genres,
       },
+      onError: (error) => {
+        console.log(error.graphQLErrors);
+      },
+      refetchQueries: genres
+        .map((g) => {
+          return {
+            query: ALL_BOOKS,
+            variables: {
+              genre: g,
+            },
+          };
+        })
+        .concat({ query: ALL_BOOKS })
+        .concat({ query: ALL_GENRES })
+        .concat({ query: ALL_AUTHORS }),
     });
 
     setTitle("");
@@ -42,8 +51,16 @@ const NewBook = (props) => {
   };
 
   const addGenre = () => {
-    setGenres(genres.concat(genre));
+    if (genre && !genres.includes(genre)) {
+      setGenres(genres.concat(genre));
+    }
     setGenre("");
+  };
+
+  const deleteGenre = (genre) => {
+    if (genres.includes(genre)) {
+      setGenres(genres.filter((g) => g !== genre));
+    }
   };
 
   return (
@@ -81,7 +98,22 @@ const NewBook = (props) => {
             add genre
           </button>
         </div>
-        <div>genres: {genres.join(" ")}</div>
+        <div>
+          genres:
+          {genres.map((g, i) => (
+            <span key={i}>
+              {g}
+              <button
+                type="button"
+                style={{ fontSize: "9px" }}
+                onClick={() => deleteGenre(g)}
+              >
+                {deleteIcon}
+              </button>
+              &nbsp;
+            </span>
+          ))}
+        </div>
         <button type="submit">create book</button>
       </form>
     </div>

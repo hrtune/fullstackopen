@@ -4,15 +4,17 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import Login from "./components/Login";
 import Recommend from "./components/Recommend";
-import { useApolloClient, useQuery } from "@apollo/client";
-import { ME } from "./queries";
+import { useApolloClient, useQuery, useMutation } from "@apollo/client";
+import { ME, ADD_BOOK } from "./queries";
 
 const App = () => {
   const client = useApolloClient();
   const [page, setPage] = useState("authors");
   const [token, setToken] = useState(null);
 
+  // queries and mutations
   const meQuery = useQuery(ME);
+  const [addBook] = useMutation(ADD_BOOK);
 
   const logout = () => {
     setToken(null);
@@ -48,7 +50,7 @@ const App = () => {
 
       <Books show={page === "books"} />
 
-      <NewBook show={page === "add"} />
+      <NewBook show={page === "add"} addBook={addBook} />
 
       <Recommend
         show={page === "recommend"}
