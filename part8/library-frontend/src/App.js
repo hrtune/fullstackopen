@@ -4,8 +4,13 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import Login from "./components/Login";
 import Recommend from "./components/Recommend";
-import { useApolloClient, useQuery, useMutation } from "@apollo/client";
-import { ME, ADD_BOOK } from "./queries";
+import {
+  useApolloClient,
+  useQuery,
+  useMutation,
+  useSubscription,
+} from "@apollo/client";
+import { ME, ADD_BOOK, BOOK_ADDED } from "./queries";
 
 const App = () => {
   const client = useApolloClient();
@@ -15,6 +20,13 @@ const App = () => {
   // queries and mutations
   const meQuery = useQuery(ME);
   const [addBook] = useMutation(ADD_BOOK);
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      console.log(data);
+      const title = data.data.bookAdded.title;
+      window.alert(`Book added: ${title}`);
+    },
+  });
 
   const logout = () => {
     setToken(null);
