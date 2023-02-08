@@ -4,13 +4,42 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import Login from "./components/Login";
 import Recommend from "./components/Recommend";
-import {
-  useApolloClient,
-  useQuery,
-  useMutation,
-  useSubscription,
-} from "@apollo/client";
-import { ME, ADD_BOOK, BOOK_ADDED } from "./queries";
+import { useApolloClient, useMutation, useSubscription } from "@apollo/client";
+import { ADD_BOOK, BOOK_ADDED, ALL_BOOKS, ALL_GENRES } from "./queries";
+
+// function that takes care of manipulating cache
+export const updateCache = (cache, query, addedBook) => {
+  // helper that is used to eliminate saving same person twice
+  const uniqByName = (a) => {
+    let seen = new Set();
+    return a.filter((item) => {
+      let k = item.name;
+      return seen.has(k) ? false : seen.add(k);
+    });
+  };
+
+  if (query.query === ALL_BOOKS) {
+    cache.updateQuery(query, (data) => {
+      if (!data) {
+        return;
+      }
+      const allBooks = data.allBooks;
+      return {
+        allBooks: allBooks.concat(addedBook),
+      };
+    });
+  }
+
+  if (query.query === ALL_GENRES) {
+    const addedGenres = addedBook.genres;
+    cache.updateQuery(query, ({ allGenres }) => {
+      const genreSet = new Set(allGenres.concat(addedGenres));
+      return {
+        allGenres: Array.from(genreSet),
+      };
+    });
+  }
+};
 
 const App = () => {
   const client = useApolloClient();
@@ -18,13 +47,14 @@ const App = () => {
   const [token, setToken] = useState(null);
 
   // queries and mutations
-  const meQuery = useQuery(ME);
   const [addBook] = useMutation(ADD_BOOK);
   useSubscription(BOOK_ADDED, {
-    onData: ({ data }) => {
+    onData: ({ data, client }) => {
       console.log(data);
-      const title = data.data.bookAdded.title;
-      window.alert(`Book added: ${title}`);
+      const book = data.data.bookAdded;
+      window.alert(`Book added: ${book.title}`);
+      updateCache(client.cache, { query: ALL_BOOKS }, book);
+      updateCache(client.cache, { query: ALL_GENRES }, book);
     },
   });
 
@@ -64,10 +94,7 @@ const App = () => {
 
       <NewBook show={page === "add"} addBook={addBook} />
 
-      <Recommend
-        show={page === "recommend"}
-        user={meQuery.data ? meQuery.data.me : null}
-      />
+      <Recommend show={page === "recommend"} />
 
       <Login show={page === "login"} setToken={setToken} setPage={setPage} />
     </div>

@@ -1,12 +1,21 @@
 import BooksByGenre from "./BooksByGenre";
+import { useQuery } from "@apollo/client";
+import { ME } from "../queries";
 
-const Recommend = ({ show, user }) => {
+const Recommend = ({ show }) => {
+  const meQuery = useQuery(ME);
+
   if (!show) {
     return null;
   }
-  if (!user) {
-    <div>loading...</div>;
+
+  if (meQuery.loading) {
+    return <div>loading...</div>;
   }
+
+  const user = meQuery.data.me;
+
+  console.log(meQuery.data);
 
   return (
     <div>
