@@ -81,6 +81,7 @@ const resolvers = {
           invalidArgs: { ...args },
         });
       }
+      pubsub.publish("BOOK_ADDED", { bookAdded: newBook });
       return newBook;
     },
 

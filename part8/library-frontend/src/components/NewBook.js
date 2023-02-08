@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { ALL_BOOKS, ALL_GENRES, ALL_AUTHORS } from "../queries";
+import { updateCache } from "../App";
 
 const NewBook = ({ show, addBook }) => {
   const [title, setTitle] = useState("");
@@ -29,18 +30,11 @@ const NewBook = ({ show, addBook }) => {
       onError: (error) => {
         console.log(error.graphQLErrors);
       },
-      refetchQueries: genres
-        .map((g) => {
-          return {
-            query: ALL_BOOKS,
-            variables: {
-              genre: g,
-            },
-          };
-        })
-        .concat({ query: ALL_BOOKS })
-        .concat({ query: ALL_GENRES })
-        .concat({ query: ALL_AUTHORS }),
+      update: (cache, response) => {
+        updateCache(cache, { query: ALL_BOOKS }, response.data.addBook);
+        updateCache(cache, { query: ALL_GENRES }, response.data.addBook);
+        updateCache(cache, { query: ALL_AUTHORS }, response.data.addBook);
+      },
     });
 
     setTitle("");

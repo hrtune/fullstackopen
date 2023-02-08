@@ -5,27 +5,27 @@ import NewBook from "./components/NewBook";
 import Login from "./components/Login";
 import Recommend from "./components/Recommend";
 import { useApolloClient, useMutation, useSubscription } from "@apollo/client";
-import { ADD_BOOK, BOOK_ADDED, ALL_BOOKS, ALL_GENRES } from "./queries";
+import {
+  ADD_BOOK,
+  BOOK_ADDED,
+  ALL_BOOKS,
+  ALL_GENRES,
+  ALL_AUTHORS,
+} from "./queries";
 
 // function that takes care of manipulating cache
 export const updateCache = (cache, query, addedBook) => {
-  // helper that is used to eliminate saving same person twice
-  const uniqByName = (a) => {
-    let seen = new Set();
-    return a.filter((item) => {
-      let k = item.name;
-      return seen.has(k) ? false : seen.add(k);
-    });
-  };
-
   if (query.query === ALL_BOOKS) {
     cache.updateQuery(query, (data) => {
       if (!data) {
         return;
       }
       const allBooks = data.allBooks;
+      const allBooksId = allBooks.map((b) => b.id);
       return {
-        allBooks: allBooks.concat(addedBook),
+        allBooks: allBooksId.includes(addedBook.id)
+          ? allBooks
+          : allBooks.concat(addedBook),
       };
     });
   }
@@ -36,6 +36,18 @@ export const updateCache = (cache, query, addedBook) => {
       const genreSet = new Set(allGenres.concat(addedGenres));
       return {
         allGenres: Array.from(genreSet),
+      };
+    });
+  }
+
+  if (query.query === ALL_AUTHORS) {
+    // this author object should include correct data
+    const addedAuthor = addedBook.author;
+    cache.updateQuery(query, ({ allAuthors }) => {
+      // omit old author
+      const otherAuthors = allAuthors.filter((a) => a.id !== addedAuthor.id);
+      return {
+        allAuthors: otherAuthors.concat(addedAuthor),
       };
     });
   }
@@ -55,6 +67,7 @@ const App = () => {
       window.alert(`Book added: ${book.title}`);
       updateCache(client.cache, { query: ALL_BOOKS }, book);
       updateCache(client.cache, { query: ALL_GENRES }, book);
+      updateCache(client.cache, { query: ALL_AUTHORS }, book);
     },
   });
 
