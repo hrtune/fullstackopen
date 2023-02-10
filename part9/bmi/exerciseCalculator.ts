@@ -1,3 +1,26 @@
+interface exerciseHours {
+  dailyExerciseHours: number[];
+  targetHours: number;
+}
+
+const parseArgumentsForExercise = (args: string[]): exerciseHours => {
+  if (args.length < 4) {
+    throw new Error("at least 2 arguments are required");
+  }
+
+  const numberedArgs = args.slice(2).map((n) => Number(n));
+
+  numberedArgs.forEach((n) => {
+    if (isNaN(n)) {
+      throw new Error("arguments must be numbers");
+    }
+  });
+
+  const dailyExerciseHours = numberedArgs.slice(1, args.length - 1);
+  const targetHours = numberedArgs[0];
+
+  return { dailyExerciseHours, targetHours };
+};
 interface resultObject {
   periodLength: number;
   trainingDays: number;
@@ -42,4 +65,16 @@ const calculateExercises = (
   return result;
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1], 2));
+try {
+  const { dailyExerciseHours, targetHours } = parseArgumentsForExercise(
+    process.argv
+  );
+  const result = calculateExercises(dailyExerciseHours, targetHours);
+  console.log(result);
+} catch (error: unknown) {
+  if (!(error instanceof Error)) {
+    console.log("Something bad happened.");
+  } else {
+    console.log("Error " + error.message);
+  }
+}
