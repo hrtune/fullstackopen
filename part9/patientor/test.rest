@@ -1,0 +1,15 @@
+GET http://localhost:3001/api/patients
+
+###
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+    "name": "John Cena",
+    "dateOfBirth": "1977-04-23",
+    "ssn": "11111-111X",
+    "gender": "male",
+    "occupation": "professional wrestler"
+}
+
+
