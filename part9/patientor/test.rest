@@ -12,4 +12,17 @@ Content-Type: application/json
     "occupation": "professional wrestler"
 }
 
+###
+POST http://localhost:3001/api/patients
+Content-Type: application/json
+
+{
+    "name": "Elon Musk",
+    "dateOfBirth": "yyyy-mm-dd",
+    "ssn": "12345-678X",
+    "gender": "male",
+    "occupation": "comedian" 
+}
+
+
 
