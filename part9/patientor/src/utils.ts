@@ -29,7 +29,7 @@ export const toNewPatient = (object: unknown): NewPatient => {
 };
 
 const parseName = (name: unknown): string => {
-  if (!isString(name)) {
+  if (!name || !isString(name)) {
     throw new Error("Incorrect name");
   }
   return name;
@@ -43,14 +43,14 @@ const parseDateOfBirth = (date: unknown): string => {
 };
 
 const parseSsn = (ssn: unknown): string => {
-  if (!isString(ssn)) {
+  if (!ssn || !isString(ssn)) {
     throw new Error("Incorrect ssn");
   }
   return ssn;
 };
 
 const parseOccupation = (occupation: unknown): string => {
-  if (!isString(occupation)) {
+  if (!occupation || !isString(occupation)) {
     throw new Error("Incorrect occupation");
   }
   return occupation;
