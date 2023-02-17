@@ -43,18 +43,42 @@ const NewDiary = ({
       <ErrorMessage message={errorMessage} />
       <form onSubmit={addDiary}>
         <div>
-          date: <input value={date} onChange={(e) => setDate(e.target.value)} />
-        </div>
-        <div>
-          visibility:{" "}
+          date:{" "}
           <input
-            value={visibility}
-            onChange={(e) => setVisibility(e.target.value)}
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
           />
         </div>
         <div>
+          visibility:{" "}
+          {Object.values(Visibility).map((v) => (
+            <span key={v}>
+              <input
+                type="radio"
+                id={v}
+                name="visibility"
+                onChange={() => setVisibility(v)}
+                checked={visibility === v}
+              />
+              {v}{" "}
+            </span>
+          ))}
+        </div>
+        <div>
           weather:{" "}
-          <input value={weather} onChange={(e) => setWeather(e.target.value)} />
+          {Object.values(Weather).map((v) => (
+            <span key={v}>
+              <input
+                type="radio"
+                id={v}
+                name="weather"
+                onChange={() => setWeather(v)}
+                checked={weather === v}
+              />
+              {v}{" "}
+            </span>
+          ))}
         </div>
         <div>
           comment:{" "}
