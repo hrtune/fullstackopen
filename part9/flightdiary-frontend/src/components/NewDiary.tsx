@@ -1,7 +1,20 @@
 import { useState } from "react";
 import { NewDiaryEntry, Visibility, Weather } from "../types";
 
-const NewDiary = ({ submit }: { submit: (diary: NewDiaryEntry) => void }) => {
+const ErrorMessage = ({ message }: { message: string }) => {
+  const style = {
+    color: "red",
+  };
+  return <div style={style}>{message}</div>;
+};
+
+const NewDiary = ({
+  submit,
+  errorMessage,
+}: {
+  submit: (diary: NewDiaryEntry) => void;
+  errorMessage: string;
+}) => {
   const [date, setDate] = useState<string>("");
   const [visibility, setVisibility] = useState<string>("");
   const [weather, setWeather] = useState<string>("");
@@ -27,6 +40,7 @@ const NewDiary = ({ submit }: { submit: (diary: NewDiaryEntry) => void }) => {
   return (
     <div>
       <h2>Add new entry</h2>
+      <ErrorMessage message={errorMessage} />
       <form onSubmit={addDiary}>
         <div>
           date: <input value={date} onChange={(e) => setDate(e.target.value)} />

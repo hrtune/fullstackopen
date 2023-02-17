@@ -13,3 +13,14 @@ Content-Type: application/json
   "date": "2023-02-17",
   "comment": "It was so hot I needed much water."
 }
+
+###
+POST http://localhost:3001/api/diaries
+Content-Type: application/json
+
+{
+  "weather": "suny",
+  "visibility": "good",
+  "date": "2022-01-11",
+  "comment": "It was so hot I needed much water."
+}
