@@ -1,6 +1,4 @@
-import { useState, useEffect } from "react";
 import { NonSensitiveDiaryEntry } from "../types";
-import diaryService from "../services/diaryService";
 
 const Diary = ({ diary }: { diary: NonSensitiveDiaryEntry }) => {
   return (
@@ -12,13 +10,7 @@ const Diary = ({ diary }: { diary: NonSensitiveDiaryEntry }) => {
   );
 };
 
-const Diaries = () => {
-  const [diaries, setDiaries] = useState<NonSensitiveDiaryEntry[]>([]);
-  useEffect(() => {
-    diaryService.getAllDiaries().then((data) => {
-      setDiaries(data);
-    });
-  });
+const Diaries = ({ diaries }: { diaries: NonSensitiveDiaryEntry[] }) => {
   return (
     <div>
       <h2>Diary entries</h2>
