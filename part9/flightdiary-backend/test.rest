@@ -1,0 +1,15 @@
+GET http://localhost:3001/api/diaries
+
+###
+GET http://localhost:3001/api/diaries/4
+
+###
+POST http://localhost:3001/api/diaries
+Content-Type: application/json
+
+{
+  "weather": "sunny",
+  "visibility": "good",
+  "date": "2023-02-17",
+  "comment": "It was so hot I needed much water."
+}
