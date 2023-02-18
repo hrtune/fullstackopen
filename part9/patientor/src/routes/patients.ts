@@ -8,6 +8,21 @@ router.get("/", (_req, res) => {
   res.json(patientService.getAllWithoutSsn());
 });
 
+router.get("/:id", (req, res) => {
+  const id = req.params.id;
+  try {
+    const patient = patientService.getById(id);
+    return res.json(patient);
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      return res.status(404).send(error.message);
+    } else {
+      console.log(error);
+      return res.status(500).send("Somethng wrong.");
+    }
+  }
+});
+
 router.post("/", (req, res) => {
   try {
     const patient = toNewPatient(req.body);

@@ -1,4 +1,13 @@
+# get all patients
 GET http://localhost:3001/api/patients
+
+###
+# get a patient by id
+GET http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667
+
+###
+# get non-existent patient
+GET http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155668
 
 ###
 POST http://localhost:3001/api/patients
@@ -9,10 +18,12 @@ Content-Type: application/json
     "dateOfBirth": "1977-04-23",
     "ssn": "11111-111X",
     "gender": "male",
-    "occupation": "professional wrestler"
+    "occupation": "professional wrestler",
+    "entries": []
 }
 
 ###
+# date is in wrong form
 POST http://localhost:3001/api/patients
 Content-Type: application/json
 
@@ -21,7 +32,8 @@ Content-Type: application/json
     "dateOfBirth": "yyyy-mm-dd",
     "ssn": "12345-678X",
     "gender": "male",
-    "occupation": "comedian" 
+    "occupation": "comedian" ,
+    "entries": []
 }
 
 

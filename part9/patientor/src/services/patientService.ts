@@ -4,15 +4,26 @@ import { v1 as uuid } from "uuid";
 
 const getAll = (): Patient[] => patientData;
 const getAllWithoutSsn = (): PatientWithoutSsn[] => {
-  return patientData.map(({ id, name, dateOfBirth, gender, occupation }) => {
-    return {
-      id,
-      name,
-      dateOfBirth,
-      gender,
-      occupation,
-    };
-  });
+  return patientData.map(
+    ({ id, name, dateOfBirth, gender, occupation, entries }) => {
+      return {
+        id,
+        name,
+        dateOfBirth,
+        gender,
+        occupation,
+        entries,
+      };
+    }
+  );
+};
+
+const getById = (id: string): Patient => {
+  const patient = patientData.find((p) => p.id === id);
+  if (!patient) {
+    throw new Error(`patient not found`);
+  }
+  return patient;
 };
 
 const addPatient = (patient: NewPatient): Patient => {
@@ -32,4 +43,5 @@ export default {
   getAll,
   getAllWithoutSsn,
   addPatient,
+  getById,
 };

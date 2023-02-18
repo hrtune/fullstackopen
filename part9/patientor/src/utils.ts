@@ -1,4 +1,4 @@
-import { NewPatient, Gender } from "./types";
+import { NewPatient, Gender, Entry } from "./types";
 
 export const toNewPatient = (object: unknown): NewPatient => {
   if (!object || typeof object !== "object") {
@@ -11,7 +11,8 @@ export const toNewPatient = (object: unknown): NewPatient => {
       "dateOfBirth" in object &&
       "ssn" in object &&
       "gender" in object &&
-      "occupation" in object
+      "occupation" in object &&
+      "entries" in object
     )
   ) {
     throw new Error("Incorrect data: some fields are missing");
@@ -23,6 +24,7 @@ export const toNewPatient = (object: unknown): NewPatient => {
     ssn: parseSsn(object.ssn),
     gender: parseGender(object.gender),
     occupation: parseOccupation(object.occupation),
+    entries: parseEntries(object.entries),
   };
 
   return newPatient;
@@ -63,6 +65,14 @@ const parseGender = (gender: unknown): Gender => {
   return gender;
 };
 
+const parseEntries = (entries: unknown): Entry[] => {
+  if (!Array.isArray(entries) || !isEntries(entries)) {
+    throw new Error("Incorrect entries");
+  }
+
+  return entries;
+};
+
 const isString = (text: unknown): text is string => {
   return typeof text === "string" || text instanceof String;
 };
@@ -75,4 +85,12 @@ const isGender = (text: string): text is Gender => {
   return Object.values(Gender)
     .map((v) => v.toString())
     .includes(text);
+};
+
+const isEntry = (entry: unknown): boolean => {
+  return true || entry; // fix this for actual entry type
+};
+
+const isEntries = (array: Array<unknown>): array is Array<Entry> => {
+  return array.reduce((acc: boolean, e: unknown) => isEntry(e) && acc, true);
 };
