@@ -1,0 +1,11 @@
+### get all
+GET http://localhost:3001/api/diagnoses
+
+### post one (about hay fever)
+POST http://localhost:3001/api/diagnoses
+Content-Type: application/json
+
+{
+    "code": "J30.1",
+    "name": "Allergic rhinitis due to pollen"
+}

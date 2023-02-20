@@ -1,4 +1,4 @@
-import { NewPatient, Gender, Entry } from "./types";
+import { NewPatient, Gender, Entry, Diagnosis } from "./types";
 
 export const toNewPatient = (object: unknown): NewPatient => {
   if (!object || typeof object !== "object") {
@@ -30,11 +30,45 @@ export const toNewPatient = (object: unknown): NewPatient => {
   return newPatient;
 };
 
+export const toNewDiagnosis = (object: unknown): Diagnosis => {
+  if (!object || typeof object !== "object") {
+    throw new Error("Incorrect or missing data");
+  }
+  if (!("code" in object && "name" in object)) {
+    throw new Error("Incorrect data: some fields are missing");
+  }
+
+  const newDiagnosis: Diagnosis = {
+    code: parseCode(object.code),
+    name: parseName(object.name),
+  };
+
+  if ("latin" in object) {
+    newDiagnosis.latin = parseLatin(object.latin);
+  }
+
+  return newDiagnosis;
+};
+
+const parseCode = (code: unknown): string => {
+  if (!code || !isString(code)) {
+    throw new Error("Incorrect code");
+  }
+  return code;
+};
+
 const parseName = (name: unknown): string => {
   if (!name || !isString(name)) {
     throw new Error("Incorrect name");
   }
   return name;
+};
+
+const parseLatin = (latin: unknown): string => {
+  if (!latin || !isString(latin)) {
+    throw new Error("Incorrect name");
+  }
+  return latin;
 };
 
 const parseDateOfBirth = (date: unknown): string => {

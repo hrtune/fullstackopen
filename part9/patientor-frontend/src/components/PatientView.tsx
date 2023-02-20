@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Patient, Entry } from "../types";
+import { Patient, Entry, Diagnosis } from "../types";
 import patientService from "../services/patients";
-const PatientView = () => {
+const PatientView = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
   const id = useParams().id;
   const [patient, setPatient] = useState<Patient | null>(null);
   useEffect(() => {
@@ -16,6 +16,18 @@ const PatientView = () => {
     return <h2>404 Not Found</h2>;
   }
 
+  const DiagnosisListItem = ({ code }: { code: string }) => {
+    const diagnosis = diagnoses.find((d) => d.code === code);
+    if (!diagnosis) {
+      return null;
+    }
+    return (
+      <li>
+        {code} {diagnosis.name}
+      </li>
+    );
+  };
+
   const EntryView = ({ entry }: { entry: Entry }) => {
     return (
       <div>
@@ -25,7 +37,7 @@ const PatientView = () => {
         {entry.diagnosisCodes ? (
           <ul>
             {entry.diagnosisCodes.map((dc) => (
-              <li key={dc}>{dc}</li>
+              <DiagnosisListItem code={dc} key={dc} />
             ))}
           </ul>
         ) : (
