@@ -36,5 +36,62 @@ Content-Type: application/json
     "entries": []
 }
 
+###
+# add an health check entry (to Hans Gruber)
+POST http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+    "date": "2023-10-05",
+    "specialist": "John Cena",
+    "type": "HealthCheck",
+    "description": "Check how good at wrestling",
+    "healthCheckRating": 0
+}
+
+###
+# add an occupational healthcare entry (to Hans Gruber)
+POST http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+    "date": "2023-08-05",
+    "type": "OccupationalHealthcare",
+    "specialist": "MD House",
+    "employerName": "FedEx",
+    "diagnosisCodes": [
+        "J30.1",
+        "H04.129"
+    ],
+    "description": "He's okay",
+    "sickLeave": {
+        "startDate": "2023-08-05",
+        "endDate": "2023-08-28"
+    }
+}
+
+###
+# add an hospital entry (to Hans Gruber)
+POST http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667/entries
+Content-Type: application/json
+
+{
+    "date": "2023-01-02",
+    "type": "Hospital",
+    "specialist": "MD House",
+    "diagnosisCodes": [
+        "U07.1"
+    ],
+    "description": "Coughing so loudly. I'm worrying...",
+    "discharge": {
+        "date": "2023-01-16",
+        "criteria": "Just coughing."
+    }
+}
+
+###
+# check above works
+GET http://localhost:3001/api/patients/d27736ec-f723-11e9-8f0b-362b9e155667/
+
 
 
