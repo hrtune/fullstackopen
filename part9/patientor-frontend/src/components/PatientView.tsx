@@ -7,10 +7,16 @@ import { red, yellow, green } from "@mui/material/colors";
 import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import WorkIcon from "@mui/icons-material/Work";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
+import NewHealthCheckEntry from "./NewHealthCheckEntry";
+import Alert from "@mui/material/Alert";
+import { AlertColor } from "@mui/material/Alert";
 
 const PatientView = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
   const id = useParams().id;
   const [patient, setPatient] = useState<Patient | null>(null);
+  const [alertSeverity, setAlertSeverity] = useState<AlertColor>("success");
+  const [alertMessage, setAlertMessage] = useState<string>("");
+
   useEffect(() => {
     if (!id) {
       return;
@@ -18,9 +24,29 @@ const PatientView = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
     patientService.getById(id).then((data) => setPatient(data));
   });
 
-  if (!patient) {
+  if (!id || !patient) {
     return <h2>404 Not Found</h2>;
   }
+
+  const addEntry = (entry: Entry): void => {
+    const newPatient: Patient = {
+      ...patient,
+      entries: patient.entries.concat(entry),
+    };
+    setPatient(newPatient);
+  };
+
+  const setAlert = (
+    severity: AlertColor,
+    message: string,
+    timeout: number = 3000
+  ): void => {
+    setAlertSeverity(severity);
+    setAlertMessage(message);
+    setTimeout(() => {
+      setAlertMessage("");
+    }, timeout);
+  };
 
   const DiagnosisListItem = ({ code }: { code: string }) => {
     const diagnosis = diagnoses.find((d) => d.code === code);
@@ -136,6 +162,8 @@ const PatientView = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
       <div>gender: {patient.gender}</div>
       <div>ssn: {patient.ssn}</div>
       <div>occupation: {patient.occupation}</div>
+      {alertMessage && <Alert severity={alertSeverity}>{alertMessage}</Alert>}
+      <NewHealthCheckEntry id={id} addEntry={addEntry} setAlert={setAlert} />
       <Entries />
     </div>
   );
