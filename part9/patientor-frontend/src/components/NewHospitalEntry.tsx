@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Entry, EntryWithoutId, Discharge } from "../types";
+import { Entry, EntryWithoutId, Discharge, Diagnosis } from "../types";
 import patientService from "../services/patients";
 import { AlertColor } from "@mui/material";
 import { AxiosError } from "axios";
@@ -9,16 +9,26 @@ interface Props {
   addEntry: (entry: Entry) => void;
   setAlert: (severity: AlertColor, message: string) => void;
   cancel: () => void;
+  diagnoses: Diagnosis[];
 }
-const NewHospitalEntry = ({ id, addEntry, setAlert, cancel }: Props) => {
+const NewHospitalEntry = ({
+  id,
+  addEntry,
+  setAlert,
+  cancel,
+  diagnoses,
+}: Props) => {
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
-  const [codes, setCodes] = useState<string>("");
+  const [code, setCode] = useState<Diagnosis["code"]>("");
+  const [codes, setCodes] = useState<Array<Diagnosis["code"]>>([]);
   const [discharge, setDischarge] = useState<Discharge>({
     date: "",
     criteria: "",
   });
+
+  const allCodes = diagnoses.map((d) => d.code);
 
   const formStyle = {
     borderStyle: "dashed",
@@ -38,8 +48,8 @@ const NewHospitalEntry = ({ id, addEntry, setAlert, cancel }: Props) => {
 
     console.log("adding:", newEntry);
 
-    if (codes) {
-      newEntry.diagnosisCodes = codes.split(",");
+    if (codes.length) {
+      newEntry.diagnosisCodes = codes;
     }
 
     try {
@@ -117,13 +127,32 @@ const NewHospitalEntry = ({ id, addEntry, setAlert, cancel }: Props) => {
         </div>
         <div>
           Diagnosis codes:{" "}
-          <input
-            name="codes"
-            type="text"
-            value={codes}
-            onChange={(e) => setCodes(e.target.value)}
-          />
+          <select value={code} onChange={(e) => setCode(e.target.value)}>
+            <option key="default" value="">
+              --- select code ---
+            </option>
+            {allCodes.map((c) => (
+              <option key={c} value={c}>
+                {c}
+              </option>
+            ))}
+          </select>
+          <button
+            type="button"
+            onClick={() => {
+              if (code && !codes.includes(code)) {
+                setCodes(codes.concat(code));
+                setCode("");
+              }
+            }}
+          >
+            add code
+          </button>
+          <button type="button" onClick={() => setCodes([])}>
+            clear
+          </button>
         </div>
+        <div>{codes.join(", ")}</div>
         <div>
           <button type="submit">add</button>
         </div>

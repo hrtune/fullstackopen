@@ -17,6 +17,7 @@ interface PropsNewEntry {
   id: string;
   addEntry: (entry: Entry) => void;
   setAlert: (severity: AlertColor, message: string, timeout?: number) => void;
+  diagnoses: Diagnosis[];
 }
 const NewEntry = (props: PropsNewEntry) => {
   const [formType, setFormType] = useState<string>("");
@@ -198,7 +199,12 @@ const PatientView = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
       <div>ssn: {patient.ssn}</div>
       <div>occupation: {patient.occupation}</div>
       {alertMessage && <Alert severity={alertSeverity}>{alertMessage}</Alert>}
-      <NewEntry id={id} addEntry={addEntry} setAlert={setAlert} />
+      <NewEntry
+        id={id}
+        addEntry={addEntry}
+        setAlert={setAlert}
+        diagnoses={diagnoses}
+      />
       <Entries />
     </div>
   );
