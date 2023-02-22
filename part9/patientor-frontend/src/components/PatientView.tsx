@@ -8,8 +8,43 @@ import MedicalServicesIcon from "@mui/icons-material/MedicalServices";
 import WorkIcon from "@mui/icons-material/Work";
 import LocalHospitalIcon from "@mui/icons-material/LocalHospital";
 import NewHealthCheckEntry from "./NewHealthCheckEntry";
+import NewHospitalEntry from "./NewHospitalEntry";
+import NewOccupationalHealthcareEntry from "./NewOccupationalHealthcareEntry";
 import Alert from "@mui/material/Alert";
 import { AlertColor } from "@mui/material/Alert";
+
+interface PropsNewEntry {
+  id: string;
+  addEntry: (entry: Entry) => void;
+  setAlert: (severity: AlertColor, message: string, timeout?: number) => void;
+}
+const NewEntry = (props: PropsNewEntry) => {
+  const [formType, setFormType] = useState<string>("");
+  const cancel = () => setFormType("");
+
+  switch (formType) {
+    case "HealthCheck":
+      return <NewHealthCheckEntry {...props} cancel={cancel} />;
+    case "Hospital":
+      return <NewHospitalEntry {...props} cancel={cancel} />;
+    case "OccupationalHealthcare":
+      return <NewOccupationalHealthcareEntry {...props} cancel={cancel} />;
+    default:
+      return (
+        <div>
+          <h4>Create new entry</h4>
+          <button onClick={() => setFormType("HealthCheck")}>
+            Health check
+          </button>
+          🔹
+          <button onClick={() => setFormType("Hospital")}>Hospital</button>🔹
+          <button onClick={() => setFormType("OccupationalHealthcare")}>
+            Occupational healthcare
+          </button>
+        </div>
+      );
+  }
+};
 
 const PatientView = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
   const id = useParams().id;
@@ -163,7 +198,7 @@ const PatientView = ({ diagnoses }: { diagnoses: Diagnosis[] }) => {
       <div>ssn: {patient.ssn}</div>
       <div>occupation: {patient.occupation}</div>
       {alertMessage && <Alert severity={alertSeverity}>{alertMessage}</Alert>}
-      <NewHealthCheckEntry id={id} addEntry={addEntry} setAlert={setAlert} />
+      <NewEntry id={id} addEntry={addEntry} setAlert={setAlert} />
       <Entries />
     </div>
   );

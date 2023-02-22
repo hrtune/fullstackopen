@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Entry, EntryWithoutId } from "../types";
+import { Entry, EntryWithoutId, SickLeave } from "../types";
 import patientService from "../services/patients";
 import { AlertColor } from "@mui/material";
 import { AxiosError } from "axios";
@@ -10,12 +10,21 @@ interface Props {
   setAlert: (severity: AlertColor, message: string) => void;
   cancel: () => void;
 }
-const NewHealthCheckEntry = ({ id, addEntry, setAlert, cancel }: Props) => {
+const NewOccupationalHealthcareEntry = ({
+  id,
+  addEntry,
+  setAlert,
+  cancel,
+}: Props) => {
   const [description, setDescription] = useState<string>("");
   const [date, setDate] = useState<string>("");
   const [specialist, setSpecialist] = useState<string>("");
-  const [rating, setRating] = useState<string>("");
   const [codes, setCodes] = useState<string>("");
+  const [employerName, setEmployerName] = useState<string>("");
+  const [sickLeave, setSickLeave] = useState<SickLeave>({
+    startDate: "",
+    endDate: "",
+  });
 
   const formStyle = {
     borderStyle: "dashed",
@@ -26,11 +35,12 @@ const NewHealthCheckEntry = ({ id, addEntry, setAlert, cancel }: Props) => {
   const submit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
     const newEntry: EntryWithoutId = {
-      type: "HealthCheck",
+      type: "OccupationalHealthcare",
+      date,
       description,
       specialist,
-      date,
-      healthCheckRating: Number(rating),
+      employerName,
+      sickLeave,
     };
 
     console.log("adding:", newEntry);
@@ -42,6 +52,8 @@ const NewHealthCheckEntry = ({ id, addEntry, setAlert, cancel }: Props) => {
     try {
       const data: Entry = await patientService.addEntry(id, newEntry);
       addEntry(data);
+      cancel();
+      setAlert("success", "Entry added successfully");
     } catch (error: unknown) {
       console.log(error);
       if (error instanceof AxiosError) {
@@ -53,7 +65,7 @@ const NewHealthCheckEntry = ({ id, addEntry, setAlert, cancel }: Props) => {
 
   return (
     <div style={formStyle}>
-      <h4>New HealthCheck entry</h4>
+      <h4>New Occupational healthcare entry</h4>
       <form onSubmit={submit}>
         <div>
           Description:{" "}
@@ -83,12 +95,40 @@ const NewHealthCheckEntry = ({ id, addEntry, setAlert, cancel }: Props) => {
           />
         </div>
         <div>
-          Healthcheck rating:{" "}
+          Employer name:{" "}
           <input
-            name="rating"
-            type="number"
-            value={rating}
-            onChange={(e) => setRating(e.target.value)}
+            name="employerName"
+            type="text"
+            value={employerName}
+            onChange={(e) => setEmployerName(e.target.value)}
+          />
+        </div>
+        <div>
+          Sick leave:
+          <br />
+          start date:{" "}
+          <input
+            name="startDate"
+            type="date"
+            value={sickLeave.startDate}
+            onChange={(e) =>
+              setSickLeave({
+                ...sickLeave,
+                startDate: e.target.value,
+              })
+            }
+          />{" "}
+          end date:{" "}
+          <input
+            name="endDate"
+            type="date"
+            value={sickLeave.endDate}
+            onChange={(e) =>
+              setSickLeave({
+                ...sickLeave,
+                endDate: e.target.value,
+              })
+            }
           />
         </div>
         <div>
@@ -111,4 +151,4 @@ const NewHealthCheckEntry = ({ id, addEntry, setAlert, cancel }: Props) => {
   );
 };
 
-export default NewHealthCheckEntry;
+export default NewOccupationalHealthcareEntry;
